@@ -1,0 +1,29 @@
+.content-title {
+    display: flex;
+    width: 100%;
+    height: calc(var(--size-base)*13.5);
+    justify-content: space-between;
+    align-items: center;
+
+    &__title {
+        font-size: calc(var(--font-size)*9);
+        font-weight: 700;
+        font-family: 'Rubik';
+        color: var(--font-black);
+    }
+
+    &__btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*42);
+        height: calc(var(--size-base)*10);
+        margin-top: auto;
+        column-gap: calc(var(--size-base)*2);
+
+        font-size: calc(var(--font-size)*4);
+        font-weight: 400;
+        font-family: 'Rubik';
+        color: var(--font-black);
+    }
+}

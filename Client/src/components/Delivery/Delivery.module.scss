@@ -1,0 +1,27 @@
+.delivery {
+    display: flex;
+    width: 100%;
+    height: calc(var(--size-base)*50);
+    justify-content: center;
+    background-image: url('/src/reference/image/delivery__bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+
+    &__content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__img {
+        display: block;
+        width: calc(var(--size-base)*75);
+    }
+
+    &__title {
+        font-size: calc(var(--font-size)*12);
+        font-family: 'Rubik';
+        font-weight: 700;
+    }
+}

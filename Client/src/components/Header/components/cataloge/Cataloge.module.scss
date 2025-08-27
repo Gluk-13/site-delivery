@@ -1,0 +1,25 @@
+// @import url('../../../../global/style/_base.scss');
+
+.cataloge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(var(--size-base)*35);
+    height: calc(var(--size-base)*10);
+    background-color: var(--border-green);
+    column-gap: calc(var(--size-base)*4);
+    border-radius: 5px;
+    z-index: 0;
+
+    &__svg {
+        display: flex;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    &__link {
+        font-size: calc(var(--font-size)*4);
+        color: var(--font-white);
+        z-index: 1;
+    }
+}

@@ -1,0 +1,28 @@
+
+@font-face {
+    font-family: 'Rubik';
+    src: url(/src/reference/fonts/Rubik/Rubik-Bold.woff);
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Rubik';
+    src: url(/src/reference/fonts/Rubik/Rubik-Regular.woff);
+    font-weight: 400;
+}
+
+:root {
+    --font-white: #FFFFFF;
+    --border-green: #70C05B;
+    --size-base: 4px;
+    --font-size: 4px;
+    --header-border:#8F8F8F;
+    --footer-bg:#F9F4E2;
+    --light-gray:#F3F2F1;
+    --primary-color:#FF6633;
+    --font-gray:#BFBFBF;
+    --font-dark:#414141;
+    --main-bg:#FBF8EC;
+    --authorization-bg:#FCD5BA;
+    --font-black:#414141;
+}

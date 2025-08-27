@@ -1,0 +1,19 @@
+{
+  "name": "site-delivery",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd Server && npm run dev",
+    "dev:client": "cd Client && npm run dev",
+    "start": "cd Server && npm start",
+    "build": "cd Client && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

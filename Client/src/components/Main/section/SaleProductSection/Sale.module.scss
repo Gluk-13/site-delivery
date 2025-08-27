@@ -1,0 +1,11 @@
+.sale {
+    display: flex;
+    flex-direction: column;
+    row-gap: calc(var(--size-base)*10);
+
+    &__container_content {
+        width: 100%;
+        display: grid;
+        
+    }
+}

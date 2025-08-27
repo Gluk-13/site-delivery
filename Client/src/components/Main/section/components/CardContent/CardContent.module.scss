@@ -1,0 +1,124 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    width: calc(var(--size-base)*68);
+    height: calc(var(--size-base)*87);
+
+    background-color: var(--font-white);
+
+    &__container_img {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        width: 100%;
+        height: calc(var(--size-base)*40);
+    }
+
+    &__container_svg {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--light-gray);
+        opacity: 0.5;
+        margin-left: auto;
+        margin-right: 4px;
+        margin-top: 4px;
+    }
+
+    &__svg_favorite {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &__sale_info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*14);
+        height: calc(var(--size-base)*8);
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        color: var(--font-white);
+        margin-left: calc(var(--size-base)*2.5);
+        margin-bottom: calc(var(--size-base)*2.5);
+    }
+
+    &__info_descr {
+        font-size: calc(var(--font-size)*4);
+        color: var(--font-dark);
+    }
+
+    &__container_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: calc(var(--size-base)*47.5);
+
+        padding: calc(var(--size-base)*2);
+        row-gap: calc(var(--size-base)*2);
+    }
+
+    &__price_info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    &__price_title {
+        font-size: calc(var(--font-size)*4.5);
+        font-weight: 400;
+        font-family: 'Rubik';
+    }
+
+    &__price_subtitle {
+        font-family: 'Rubik';
+        font-size: calc(var(--size-base)*3);
+        color: var(--font-gray);
+    }
+
+    &__newPrice_title {
+        font-weight: 700;
+    }
+
+    &__price_new {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__score_product {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        width: 100%;
+        column-gap: calc(var(--size-base)*1);
+    }
+
+    &__bascket_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: calc(var(--size-base)*10);
+        border: 1px solid var(--border-green);
+        color: var(--border-green);
+        font-size: calc(var(--font-size)*4);
+        font-weight: 400;
+        font-family: 'Rubik';
+
+        &:hover{
+            background-color: var(--primary-color);
+            color: var(--font-white);
+            border: none;
+        }
+    }
+}

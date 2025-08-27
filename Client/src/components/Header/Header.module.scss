@@ -1,0 +1,87 @@
+
+.header {
+    width: 100%;
+    height: calc(var(--size-base)*18);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1); // горизонтальное смещение, вертикальное, размытие, цвет
+
+    
+    &__nav {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        column-gap: calc(var(--size-base)*10);
+    }
+
+    &__container_search {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: calc(var(--size-base)*10);
+    }
+
+    &__container_nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: calc(var(--size-base)*4);
+    }
+
+    &__container_btn {
+        display: flex;
+        column-gap: calc(var(--size-base)*6);
+    }
+
+    &__container_icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        row-gap: calc(var(--size-base)*2);
+    }
+
+    &__author_logo {
+        width: calc(var(--size-base)*10);
+        height: calc(var(--size-base)*10);
+        display: flex;
+        background-color: gray;
+        border-radius: 20px;
+    }
+
+    &__container_svg {
+        display: flex;
+        justify-content: center;
+        width: calc(var(--size-base)*10);
+        height: calc(var(--size-base)*10);
+    }
+
+    &__author_container {
+        width: calc(var(--size-base)*50);
+        height: calc(var(--size-base)*14);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: calc(var(--size-base)*2.5);
+    }
+
+    &__author_name {
+        display: flex;
+        width: calc(var(--size-base)*21);
+        align-items: start;
+        font-size: calc(var(--font-size)*4);
+        font-weight: 500;
+    }
+
+    &__logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*38);
+        height: calc(var(--size-base)*8);
+        column-gap: calc(var(--size-base)*3);
+        z-index: 2;
+        cursor: pointer;
+    }
+}
