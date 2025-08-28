@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './Main.module.scss'
 import Sale from './section/SaleProductSection/Sale'
-import NewProduct from './section/NewProductSection/NewProduct'
+import NewProduct from './section/NewProduct/NewProduct'
 
 function Main() {
   return (

@@ -4,6 +4,7 @@ import styles from './CardContent.module.scss'
 
 
 function CardContent({ name, price, discountPrice, imageUrl, rating, discountPercent }) {
+    const percentFloor = Math.floor(discountPercent)
     function CalcStars (rating) {
         const stars = [];
         const fullStars = Math.floor(rating)
@@ -30,7 +31,7 @@ function CardContent({ name, price, discountPrice, imageUrl, rating, discountPer
   return (
     <div className={styles.card}>
         <div className={styles.card__container_img} style={{
-            backgroundImage:`url('http://localhost:4200/api/uploads${imageUrl}')`,
+            backgroundImage:`url('http://localhost:4200/api/uploads/${imageUrl}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
         }}
@@ -53,7 +54,7 @@ function CardContent({ name, price, discountPrice, imageUrl, rating, discountPer
                 </div>
                 {discountPercent && (
                 <div className={styles.card__sale_info}>
-                    <p className={styles.card__sale_descr}>-{discountPercent}%</p>
+                    <p className={styles.card__sale_descr}>-{percentFloor}%</p>
                 </div>)
                 }
             </div>
@@ -70,7 +71,7 @@ function CardContent({ name, price, discountPrice, imageUrl, rating, discountPer
                 </div>
             </div>
             <div className={styles.card__info_product}>
-                <p className={styles.card__info_descr}>{name}{imageUrl}</p>
+                <p className={styles.card__info_descr}>{name}</p>
             </div>
             <div className={styles.card__score_product}>
                 {CalcStars(rating)}
