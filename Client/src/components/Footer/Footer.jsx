@@ -44,8 +44,8 @@ function Footer() {
                                     <defs>
                                     <linearGradient id="paint0_linear_1840_1045" x1="5.42912" y1="19.0709" x2="19.5709" y2="4.92912" gradientUnits="userSpaceOnUse">
                                     <stop stop-color="#FFC107"/>
-                                    <stop offset="0.507" stop-color="#F44336"/>
-                                    <stop offset="0.99" stop-color="#9C27B0"/>
+                                    <stop offset="0.507" stopColor="#F44336"/>
+                                    <stop offset="0.99" stopColor="#9C27B0"/>
                                     </linearGradient>
                                     </defs>
                                 </svg>

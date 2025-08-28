@@ -7,6 +7,9 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'food_delivery',
   password: process.env.DB_PASSWORD || '1833',
   port: process.env.DB_PORT || 5432,
+  DATABASE_URL:'postgresql://postgres:1833@localhost:5432/food_delivery',
+  connectionString: process.env.DATABASE_URL,
+  client_encoding: 'UTF8'
 });
 
 // Проверка подключения

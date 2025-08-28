@@ -5,13 +5,13 @@ const pool = require('../db');
 
 router.get('/discounted', async (req, res) => {
     try {
-        const query = `SELECT * FROM products WHERE discount_percent = TRUE`;
-        const result = await pool.query(query);
-        
+        const query = `SELECT * FROM products WHERE discount_percent > 0`;
+        const dbResult = await pool.query(query);
+        const result = dbResult.rows
+
         res.json({
             success: true,
-            data: result.rows,
-            count: result.rows.length
+            data: result,
         });
     } catch (error) {
         console.error('Ошибка в получении товаров:', error);

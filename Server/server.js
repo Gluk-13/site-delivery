@@ -1,7 +1,8 @@
 const express = require('express');
 const ViteExpress = require('vite-express');
 const cors = require('cors');
-require('dotevn').config();
+const path = require('path')
+require('dotenv').config();
 
 const app = express();
 
@@ -10,7 +11,7 @@ app.use(express.json());
 
 const productsRoutes = require('./rootes/products');
 app.use('/api/products', productsRoutes);
-
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads'))); //Даю доступ к папке с картинками фронту
 
 app.get('/api/test', (req, res) => {
     res.json ({messege: 'Сервер работает!'});

@@ -1,0 +1,27 @@
+# Зависимости
+node_modules/
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Server specific
+Server/uploads/
+Server/.env
+
+# Client specific
+Client/dist/
+Client/.env
