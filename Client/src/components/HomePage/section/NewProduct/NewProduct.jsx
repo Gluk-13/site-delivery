@@ -25,7 +25,6 @@ function NewProduct() {
 
         if (result.success && result.data) {
                 setProducts(result.data);
-                console.log('📦 Полные данные от сервера:', result);
             } else {
                 throw new Error (`Неверный формат данных`);
         }

@@ -1,7 +1,7 @@
 .authorization {
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     justify-content: center;
     align-items: center;
     background-color: var(--authorization-bg);
@@ -11,18 +11,21 @@
         display: flex;
         flex-direction: column;
         width: calc(var(--size-base)*105);
-        height: calc(var(--size-base)*107.5);
+        height: calc(var(--size-base)*150.5);
         background-color: var(--font-white);
     }
 
     &__container_btn {
         width: 100%;
         display: flex;
-        justify-content: end;
+        color: var(--primary-color);
+        font-size: calc(var(--font-size)*5);
+        text-align: center;
     }
 
     &__cancel_btn {
-        display: flex;
+        display: block;
+        margin-left: auto;
         justify-content: center;
         align-items: center;
         width: calc(var(--size-base)*10);
@@ -33,11 +36,12 @@
 
     &__container_content {
         width: 100%;
-        height: calc(var(--size-base)*87);
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+        padding: calc(var(--size-base)*10);
     }
 
     &__container_form {
@@ -45,6 +49,7 @@
         display: flex;
         flex-direction: column;
         margin: 0 calc(var(--size-base)*20);
+        row-gap: calc(var(--size-base)*5);
     }
 
     &__title {
@@ -54,26 +59,25 @@
         font-size: calc(var(--font-size)*6);
         font-weight: 700;
         font-family: 'Rubik';
-        color: var(--font-black);
+        color: black;
     }
 
     &__descr {
-        display: flex;
+        width: 100%;
         align-items: center;
-        justify-content: start;
+        text-align: start;
         font-family: 'Rubik';
         font-weight: 400;
         font-size: calc(var(--font-size)*4.5);
         color: var(--header-border);
     }
 
-    &__form_telephone {
+    &__form {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
-        border: 1px solid var(--border-green);
-        border-radius: 3px;
+
     }
 
     &__form_input {
@@ -82,6 +86,8 @@
         height: 100%;
         justify-content: center;
         align-items: center;
+        border: 1px solid var(--border-green);
+        border-radius: 3px;
     }
 
     &__btn_primary {
@@ -93,6 +99,11 @@
         color: var(--primary-color);
         border-radius: 1px;
         background-color: var(--authorization-bg);
+    }
+
+    &__btn_primary:hover {
+        background-color: var(--primary-color);
+        color: var(--font-white);
     }
 
     &__password_btn {
@@ -110,9 +121,19 @@
         border-radius: 1px;
     }
 
+    &__register_btn:hover {
+        background-color: var(--primary-color);
+        color: var(--font-white);
+        border: none;
+    }
+
     &__recover_btn {
         width: calc(var(--size-base)*30);
         height: calc(var(--size-base)*8);
         color: var(--font-dark);
+    }
+
+    &__recover_btn:hover {
+        color: var(--primary-color);
     }
 }

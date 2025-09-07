@@ -6,7 +6,7 @@
     &__container_content {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: calc(var(--size-base)*5);
     }
 }

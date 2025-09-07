@@ -1,9 +1,9 @@
 import React from 'react'
-import styles from './Main.module.scss'
+import styles from './HomePage.module.scss'
 import Sale from './section/SaleProductSection/Sale'
 import NewProduct from './section/NewProduct/NewProduct'
 
-function Main() {
+function HomePage() {
   return (
     <main className={styles.main}>
         <div className={styles.main__content}>
@@ -14,4 +14,4 @@ function Main() {
   )
 }
 
-export default Main
+export default HomePage
