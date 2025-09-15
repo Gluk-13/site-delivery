@@ -25,3 +25,5 @@ router.patch('/reset',async (req, res) => {
         }
     }
 })
+
+export default router;

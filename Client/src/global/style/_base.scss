@@ -12,17 +12,19 @@
 }
 
 :root {
+    --error-color: #D80000;
     --font-white: #FFFFFF;
     --border-green: #70C05B;
     --size-base: 4px;
     --font-size: 4px;
     --header-border:#8F8F8F;
-    --footer-bg:#F9F4E2;
+    --footer-bg:#ffdbac;
     --light-gray:#F3F2F1;
     --primary-color:#FF6633;
     --font-gray:#BFBFBF;
-    --font-dark:#414141;
-    --main-bg:#FBF8EC;
+    --font-dark:#8F8F8F;
+    --main-bg:#f5dfc7;
     --authorization-bg:#FCD5BA;
     --font-black:#414141;
 }
+

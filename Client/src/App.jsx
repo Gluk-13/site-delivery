@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Outlet, Router } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Router, useLocation } from 'react-router-dom'
 import Header from './components/Header/Header'
 import Delivery from './components/Delivery/Delivery'
 import HomePage from './components/HomePage/HomePage'
@@ -9,8 +9,25 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import ProfilePage from './components/ProfilePage/ProfilePage'
 import CartPage from './components/ProfilePage/components/CartPage/CartPage'
 import DeliveryHistory from './components/ProfilePage/components/DeliveryHistory/DeliveryHistory'
+import MainPage from './components/MainPage/MainPage'
+import Sale from './components/HomePage/section/SaleProductSection/Sale'
+
+function AppLayout() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  return (
+    <div className="app-layout">
+      <Header/>
+      {isHomePage && <Delivery/>}
+      <MainPage/>
+      <Footer/>
+    </div>
+  ) 
+}
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -18,18 +35,14 @@ function App() {
 
         <Route path="/" element={
           <ProtectedRoute>
-            <div className="app-layout">
-              <Header />
-              <Delivery />
-              <Outlet />
-              <Footer />
-            </div>
+            <AppLayout/>
           </ProtectedRoute>
         }>
           <Route index element={<HomePage />} /> 
           <Route path="profile" element={<ProfilePage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="delivery-history" element={<DeliveryHistory />} />
+          <Route path='sale' element={<Sale/>} />
         </Route>
       </Routes>
     </BrowserRouter>
