@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
             const token = jwt.sign( //Создаем токен и передаем его в response
                 {userId: dbUserId},
                 JWT_SECRET,
-                {expiresIn: '10h'}
+                {expiresIn: '2h'}
             )
             res.json({
                 success: true,

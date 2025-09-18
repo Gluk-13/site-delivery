@@ -2,17 +2,25 @@ import React, {useState, useEffect} from 'react'
 import CardContent from '../components/CardContent/CardContent'
 import ContentTitle from '../components/ContentTitle/ContentTitle'
 import styles from './NewProduct.module.scss'
+import { useLocation } from 'react-router-dom'
+import NavComponentSection from '../components/Nav/NavComponentSection'
+import PageList from '../components/PageList/PageList'
+
 
 function NewProduct() {
     const [products, setProducts] = useState ([])
     const [loading, setLoading] = useState (true)
     const [error, setError] = useState (null)
+    const [currentPage, setCurrentPage] = useState(1); // Текущая страница
+    const [productsPerPage, setProductsPerPage] = useState(10); //Количесто продуктов на странице
+    const location = useLocation()
+
+    const isFullSection = location.pathname === '/new-product'
 
     const fetchNewProducts = async () => {
+        try {
         setLoading(true);
         setError(null);
-
-        try {
         
         const response = await fetch('http://localhost:4200/api/products/new')
         console.log(response.status,response.statusText)
@@ -48,18 +56,59 @@ function NewProduct() {
     }
 
     if (products.length === 0) {
-        return <div className={styles.sale__err}>Нет товаров со скидкой</div>;
+        return <div className={styles.sale__err}>Нет новых товаров</div>;
     }
 
-  return (
-    <section className={styles['new-product']}>
-        <ContentTitle
-        titleText='Новинки'
-        buttonText='Все новинки'
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const currentProducts = products.slice(startIndex, startIndex + productsPerPage)
+    
+    const displayedProducts = isFullSection ? currentProducts : products.slice(0,5)
+
+  if (isFullSection) { return (
+      <section className={styles['new-products']}>
+        <NavComponentSection
+          primaryLink='Главная'
+          secondLink='Новинки'
         />
-        <div className={styles['new-product__container_content']}>
-        {products.map(product => (
-            <CardContent
+        <div className={styles['new-products__content_container']}>
+          <h1 className={styles['new-products__container_title']}>
+            Новинки
+          </h1>
+          <div className={styles['new-products__quantity_container']}>
+            <p className={styles['new-products__quantity']}>{products.length}</p>
+          </div>
+        </div>
+        <div className={styles['new-products__container_content']}>
+          {displayedProducts.map(product => (
+          <CardContent
+            key={product.id}
+            name = {product.name}
+            price = {product.price}
+            discountPrice = {product.discount_price}
+            imageUrl = {product.image_url}
+            rating = {product.rating}
+            discountPercent = {product.discount_percent}
+          />))}
+        </div>
+        <PageList
+        productsProps={products}
+        totalProduct={products.length}
+        currentPage={currentPage}
+        productsPerPage={productsPerPage}
+        onPageChange={setCurrentPage}
+        />
+      </section>
+    )} else {
+    return (
+      <section className={styles['new-products']}>
+        <ContentTitle
+          titleText='Новинки'
+          buttonText='Все новинки'
+          seeLink={'/new-product'}
+        />
+        <div className={styles['new-products__container_content']}>
+          {displayedProducts.map(product => (
+          <CardContent
             key={product.id}
             name = {product.name}
             price = {product.price}
@@ -68,10 +117,10 @@ function NewProduct() {
             rating = {product.rating}
             discountPercent = {product.discount_percent}
             />
-        ))}
+          ))}
         </div>
-    </section>
-  )
+      </section>
+    )}
 };
 
 export default NewProduct

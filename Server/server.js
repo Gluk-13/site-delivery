@@ -3,10 +3,12 @@ import ViteExpress from 'vite-express'; //связь с vite
 import cors from 'cors'; //хз пока, не вникал
 import path from 'path'; // нужна для разрешения использовать папку со статичными файлами фронту
 import 'dotenv/config'; // очередной конфиг а вот че он делает...
-import productsRoutes from './rootes/products/products.js';//Роут для товаров в приложении(Информация)
-import authRoutes from './rootes/auth/login.js'; //Все три роута для авторизации 1
-import registerRoutes from './rootes/auth/register.js'//2
-import resetRoutes from './rootes/auth/reset.js'//3
+import productsRoutes from './routes/products/products.js';//Роут для товаров в приложении(Информация)
+import authRoutes from './routes/auth/login.js'; //Все три роута для авторизации 1
+import registerRoutes from './routes/auth/register.js'//2
+import resetRoutes from './routes/auth/reset.js'//3
+import cartRoutes from './routes/cart/cartRoutes.js'
+
 const app = express(); //Приложение
 
 app.use(cors()); 
@@ -41,3 +43,5 @@ app.listen(PORT, () => { //Так же просто проверка серве�
     console.log(`Сервер запущен на порту ${PORT}`);
     console.log(`Проверить его можно здесь: http://localhost:${PORT}/api/test`);
 });
+
+app.use('/api/cart', cartRoutes)

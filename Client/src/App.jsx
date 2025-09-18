@@ -11,6 +11,7 @@ import CartPage from './components/ProfilePage/components/CartPage/CartPage'
 import DeliveryHistory from './components/ProfilePage/components/DeliveryHistory/DeliveryHistory'
 import MainPage from './components/MainPage/MainPage'
 import Sale from './components/HomePage/section/SaleProductSection/Sale'
+import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
 
 function AppLayout() {
   const location = useLocation();
@@ -20,7 +21,9 @@ function AppLayout() {
     <div className="app-layout">
       <Header/>
       {isHomePage && <Delivery/>}
-      <MainPage/>
+      <ProtectedRoute>
+        <MainPage/>
+      </ProtectedRoute>
       <Footer/>
     </div>
   ) 
@@ -31,7 +34,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Authorization />} />
+        <Route path="login" element={<Authorization />} />
 
         <Route path="/" element={
           <ProtectedRoute>
@@ -43,6 +46,7 @@ function App() {
           <Route path="cart" element={<CartPage />} />
           <Route path="delivery-history" element={<DeliveryHistory />} />
           <Route path='sale' element={<Sale/>} />
+          <Route path='new-product' element={<NewProduct/>} />
         </Route>
       </Routes>
     </BrowserRouter>
