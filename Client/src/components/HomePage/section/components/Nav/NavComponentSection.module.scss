@@ -1,0 +1,21 @@
+.nav {
+    display: flex;
+    padding: calc(var(--size-base)*6);
+    margin-right: auto;
+    column-gap: calc(var(--size-base)*5);
+    align-items: center;
+    
+    &_descr {
+        color: var(--font-gray);
+        font-size: calc(var(--font-size)*3);
+        font-family: 'Rubik';
+        font-weight: 400;
+    }
+
+    &_link {
+        color: var(--font-black);
+        font-size: calc(var(--font-size)*3);
+        font-family: 'Rubik';
+        font-weight: 400;
+    }
+}

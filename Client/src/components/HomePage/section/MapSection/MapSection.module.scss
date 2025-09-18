@@ -1,0 +1,29 @@
+.map {
+    display: flex;
+    flex-direction: column;
+    height: calc(var(--size-base)*126);
+    width: 100%;
+
+    row-gap: calc(var(--size-base)*10);
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: calc(var(--size-base)*88.5);
+    }
+
+    &__container_btn {
+        display: flex;
+        column-gap: calc(var(--size-base)*6);
+        margin-bottom: calc(var(--size-base)*5);
+    }
+
+    &__btn_store {
+        padding: calc(var(--size-base)*2);
+        background-color: var(--border-green);
+        color: var(--font-white);
+        border-radius: 3px;
+        
+    }
+}

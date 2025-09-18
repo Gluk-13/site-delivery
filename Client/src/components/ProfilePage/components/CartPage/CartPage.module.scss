@@ -1,0 +1,86 @@
+
+.cart {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(var(--size-base)*156.5);
+    background-color: var(--main-bg);
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &__content_container {
+        display: flex;
+        column-gap: calc(var(--size-base)*5);
+    }
+
+    &__container_title {
+        font-size: calc(var(--font-size)*16);
+        color: var(--font-black);
+        font-weight: 700;
+        font-family: 'Rubik';
+    }
+
+    &__quantity_container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*6.5);
+        height: calc(var(--size-base)*8);
+        background-color: var(--primary-color);
+        color: var(--font-white);
+        border-radius: 5px;
+    }
+
+    &__container_cart {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: calc(var(--size-base)*117.5);
+        padding-top: calc(var(--size-base)*15);
+        column-gap: calc(var(--size-base)*10);
+    }
+
+    &__container_list {
+        display: flex;
+        flex-direction: column;
+        width: calc(var(--size-base)*224);
+        height: calc(var(--size-base)*108.5);
+    }
+
+    &__filter_container {
+        display: flex;
+        width: calc(var(--size-base)*76);
+        height: calc(var(--size-base)*8);
+    }
+
+    &__filter {
+        display: flex;
+        align-items: center;
+        width: calc(var(--size-base)*42.5);
+        height: calc(var(--size-base)*8);
+        color: var(--font-dark);
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*3);
+        font-weight: 400;
+        column-gap: calc(var(--size-base)*1);
+    }
+
+    &__delete_link {
+        display: flex;
+        align-items: center;
+        font-size: calc(var(--font-size)*3);
+        font-family: 'Rubik';
+        font-weight: 400;
+        color: var(--primary-color);
+    }
+
+    &__list {
+        display: flex;
+        width: calc(var(--size-base)*218.5);
+        height: calc(var(--size-base)*94.5);
+    }
+}

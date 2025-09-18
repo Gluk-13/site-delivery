@@ -1,0 +1,37 @@
+.page-list {
+    display: flex;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+    column-gap: calc(var(--size-base)*30);
+
+    &__page_active {
+        color: var(--primary-color);
+        font-size: calc(var(--font-size)*6);
+        font-weight: 700;
+        font-family: 'Rubik';
+    }
+
+    &__btn_disabled {
+        cursor: default;
+        color: var(--font-dark);
+    }
+
+    &__container_numbers {
+        display: flex;
+        justify-content: center;
+        column-gap: calc(var(--size-base)*20);
+    }
+
+    &__page_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+}
+
+.page-list__btn:hover {
+    z-index: 1;
+    background-color: var(--primary-color);
+}

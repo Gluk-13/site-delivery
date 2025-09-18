@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev": "concurrently \"npm run dev:redis\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:redis": "redis-server",
     "dev:server": "cd Server && npm run dev",
     "dev:client": "cd Client && npm run dev",
     "start": "cd Server && npm start",
@@ -18,6 +19,8 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0"
   }
 }

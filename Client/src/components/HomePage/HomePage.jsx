@@ -2,15 +2,15 @@ import React from 'react'
 import styles from './HomePage.module.scss'
 import Sale from './section/SaleProductSection/Sale'
 import NewProduct from './section/NewProduct/NewProduct'
+import MapSection from './section/MapSection/MapSection'
 
 function HomePage() {
   return (
-    <main className={styles.main}>
-        <div className={styles.main__content}>
-          <Sale/>
-          <NewProduct/>
-        </div>
-    </main>
+    <section className={styles.home}>
+      <Sale/>
+      <NewProduct/>
+      <MapSection/>
+    </section>
   )
 }
 

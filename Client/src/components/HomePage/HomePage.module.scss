@@ -1,19 +1,5 @@
-.main {
-    width: 100%;
-    height: calc(var(--size-base)*850);
+.home {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--main-bg);
-
-    &__content {
-        width: 85%;
-        height: calc(var(--size-base)*810);
-        display: flex;
-        flex-direction: column;
-
-        row-gap: calc(var(--size-base)*30);
-
-    }
+    row-gap: calc(var(--size-base)*30);
 }

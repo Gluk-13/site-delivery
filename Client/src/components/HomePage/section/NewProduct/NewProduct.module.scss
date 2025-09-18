@@ -1,7 +1,30 @@
-.new-product {
+.new-products {
     display: flex;
     flex-direction: column;
     row-gap: calc(var(--size-base)*10);
+
+    &__content_container {
+        display: flex;
+        column-gap: calc(var(--size-base)*5);
+    }
+
+    &__container_title {
+        font-size: calc(var(--font-size)*16);
+        color: var(--font-black);
+        font-weight: 700;
+        font-family: 'Rubik';
+    }
+
+    &__quantity_container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*6.5);
+        height: calc(var(--size-base)*8);
+        background-color: var(--primary-color);
+        color: var(--font-white);
+        border-radius: 5px;
+    }
 
     &__container_content {
         width: 100%;

@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Cataloge from './components/cataloge/Cataloge'
 import Search from './components/search/Search'
 import styles from './Header.module.scss'
+import { Link } from 'react-router-dom'
 
 function Header() {
+
+  const checkToken = !!localStorage.getItem('authToken')
+  const userName = localStorage.getItem('userName')
+
   return (
     <header className={styles.header}>
       <nav className={styles.header__nav}>
         <div className={styles.header__container_search}>
-          <a className={styles.header__logo}>
+          <Link to="/" className={styles.header__logo}>
             <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M35.6689 16.819H4.28623C3.62872 16.819 3.09179 17.3764 3.15209 18.0343C3.84119 25.8488 11.1112 31.9999 19.9776 31.9999C28.844 31.9999 36.1139 25.8517 36.803 18.0343C36.8605 17.3764 36.3264 16.819 35.6689 16.819Z" fill="#FF6633"/>
               <path fillRule="evenodd" clipRule="evenodd" d="M0.225147 3.33137C1.7887 1.27854 4.60645 0 7.711 0C10.8155 0 13.6333 1.27854 15.1969 3.33137C15.5659 3.81589 15.4714 4.50716 14.9858 4.87537C14.5001 5.24357 13.8073 5.14928 13.4383 4.66476C12.3661 3.25707 10.2569 2.20377 7.711 2.20377C5.16509 2.20377 3.05591 3.25707 1.98374 4.66476C1.6147 5.14928 0.921857 5.24357 0.436236 4.87537C-0.0493858 4.50716 -0.143894 3.81589 0.225147 3.33137Z" fill="#414141"/>
@@ -27,7 +32,7 @@ function Header() {
               <path d="M87.7144 4.80295L90.7918 0.72213C90.9507 0.511507 90.8845 0.28772 90.6396 0.28772H88.4622C88.2306 0.28772 88.1048 0.314048 87.9526 0.518089L85.4443 3.86831H84.3788V0.524671C84.3788 0.360122 84.2927 0.274556 84.1273 0.274556H82.2411C82.069 0.274556 81.983 0.360122 81.983 0.524671V9.62753C81.983 9.79866 82.069 9.88423 82.2411 9.88423H84.1273C84.2927 9.88423 84.3788 9.79866 84.3788 9.62753V6.11934H85.7421L88.1776 9.75259C88.2637 9.85132 88.3828 9.90398 88.5218 9.90398H90.719C90.9507 9.90398 91.0102 9.67361 90.8779 9.48273L87.7144 4.80295Z" fill="#414141"/>
               <path d="M97.1916 0.583909C97.1188 0.393032 96.9401 0.261392 96.7548 0.261392H95.3584C95.1731 0.261392 94.9944 0.379868 94.9083 0.583909L91.3742 9.50247C91.2882 9.73284 91.3875 9.89081 91.6323 9.89081H93.5053C93.7104 9.89081 93.8825 9.75917 93.9355 9.57488L94.3656 8.31772H97.7211L98.1579 9.58146C98.2307 9.76575 98.3961 9.89739 98.5814 9.89739H100.461C100.719 9.89739 100.805 9.72626 100.719 9.50906L97.1916 0.583909ZM96.04 3.41416L97.0394 6.32997H95.0407L96.04 3.41416Z" fill="#414141"/>
             </svg>
-          </a>
+          </Link>
           <div className={styles.header__container_nav}>
             <Cataloge/>
             <Search/>
@@ -49,28 +54,23 @@ function Header() {
             </svg>
             <p className={styles.header__descr_btn}>Заказы</p>
           </button>
-          <button className={styles.header__container_icon}>
+          <Link to="cart" className={styles.header__container_icon}>
             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M6 21C6 19.6193 7.11929 18.5 8.5 18.5C9.88071 18.5 11 19.6193 11 21C11 22.3807 9.88071 23.5 8.5 23.5C7.11929 23.5 6 22.3807 6 21ZM8.5 19.5C7.67157 19.5 7 20.1716 7 21C7 21.8284 7.67157 22.5 8.5 22.5C9.32843 22.5 10 21.8284 10 21C10 20.1716 9.32843 19.5 8.5 19.5Z" fill="#414141"/>
               <path fillRule="evenodd" clipRule="evenodd" d="M18 21C18 19.6193 19.1193 18.5 20.5 18.5C21.8807 18.5 23 19.6193 23 21C23 22.3807 21.8807 23.5 20.5 23.5C19.1193 23.5 18 22.3807 18 21ZM20.5 19.5C19.6716 19.5 19 20.1716 19 21C19 21.8284 19.6716 22.5 20.5 22.5C21.3284 22.5 22 21.8284 22 21C22 20.1716 21.3284 19.5 20.5 19.5Z" fill="#414141"/>
               <path fillRule="evenodd" clipRule="evenodd" d="M1.5 0.5C1.22386 0.5 1 0.723858 1 1C1 1.27614 1.22386 1.5 1.5 1.5H5.08051C5.83783 5.79147 6.60333 10.0643 7.24931 14.3709C7.43288 15.5947 8.48416 16.5 9.72165 16.5H19.8597C21.0514 16.5 22.0774 15.6588 22.3111 14.4903L23.7503 7.29417C23.936 6.36599 23.226 5.5 22.2795 5.5H7.66046C7.3575 5.5 7.07797 5.58901 6.84436 5.74093L5.99239 0.913107C5.95023 0.674179 5.74262 0.5 5.5 0.5H1.5ZM7.166 7.07417C7.12065 6.77187 7.35478 6.5 7.66046 6.5H22.2795C22.595 6.5 22.8316 6.78866 22.7698 7.09806L21.3305 14.2942C21.1903 14.9953 20.5747 15.5 19.8597 15.5H9.72165C8.97916 15.5 8.34839 14.9568 8.23825 14.2225L7.166 7.07417Z" fill="#414141"/>
             </svg>
-            <p className={styles.header__descr_btn}>Заказы</p>
-          </button>
-          <div className={styles.header__author_container}>
-            <button className={styles.header__author_btn}>
-              <div className={styles.header__author_logo}>
-              </div>
-            </button>
-              <p className={styles.header__author_name}>Алексей</p>
-            <button className={styles.header__menu}>
-              <div className={styles.header__container_svg}>
-                <svg className={styles.header__author_svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M5.64645 8.64645C5.84171 8.45118 6.15829 8.45118 6.35355 8.64645L12 14.2929L17.6464 8.64645C17.8417 8.45118 18.1583 8.45118 18.3536 8.64645C18.5488 8.84171 18.5488 9.15829 18.3536 9.35355L12.3536 15.3536C12.1583 15.5488 11.8417 15.5488 11.6464 15.3536L5.64645 9.35355C5.45118 9.15829 5.45118 8.84171 5.64645 8.64645Z" fill="#414141"/>
-                </svg>
-              </div>
-            </button>
-          </div>
+            <p className={styles.header__descr_btn}>Корзина</p>
+          </Link>
+            {checkToken ? 
+            (<div className={styles.header__author_container}>
+              <Link to='profile'>{userName}</Link>
+              <button className={styles.header__menu}>
+                  <svg className={styles.header__author_svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M5.64645 8.64645C5.84171 8.45118 6.15829 8.45118 6.35355 8.64645L12 14.2929L17.6464 8.64645C17.8417 8.45118 18.1583 8.45118 18.3536 8.64645C18.5488 8.84171 18.5488 9.15829 18.3536 9.35355L12.3536 15.3536C12.1583 15.5488 11.8417 15.5488 11.6464 15.3536L5.64645 9.35355C5.45118 9.15829 5.45118 8.84171 5.64645 8.64645Z" fill="#414141"/>
+                  </svg>
+              </button>
+            </div>) : (<Link className={styles.header__author_link} to='login'>Войти</Link>)}
         </div>
       </nav>
     </header>

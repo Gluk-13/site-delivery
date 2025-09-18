@@ -34,8 +34,9 @@ const Authorization = () => {
 
             const data = await response.json(); //Дожидаемся пока данные станут формата json
 
-            if (response.ok) {
-                localStorage.setItem('token',data.token)
+            if (data.success) {
+                localStorage.setItem('authToken',data.token)
+                localStorage.setItem('userName',data.user.userName)
                 navigate('/')
             } else {
                 setMessage(data.message || 'Ошибка подключения...')
@@ -126,7 +127,7 @@ const Authorization = () => {
 
             const data = await response.json(); //Дожидаемся парсинга в json формат
 
-            if (response.ok) {
+            if (data.ok) {
                 setMessage('Регистрация прошла успешно!')
                 setTimeout (()=>{
                     setCurrentView('login');
@@ -240,7 +241,7 @@ const Authorization = () => {
             })
                 const data = await response.json();
 
-                if (response.ok) {
+                if (data.ok) {
                     setMessage('Замена пароля прошла успешно!')
                 } else {
                     setMessage(data.message || 'Ошибка подключения...')

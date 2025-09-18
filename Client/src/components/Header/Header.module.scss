@@ -40,6 +40,7 @@
         justify-content: center;
         align-items: center;
         row-gap: calc(var(--size-base)*2);
+        cursor: pointer;
     }
 
     &__author_logo {
@@ -50,20 +51,13 @@
         border-radius: 20px;
     }
 
-    &__container_svg {
-        display: flex;
-        justify-content: center;
-        width: calc(var(--size-base)*10);
-        height: calc(var(--size-base)*10);
-    }
-
     &__author_container {
         width: calc(var(--size-base)*50);
         height: calc(var(--size-base)*14);
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        column-gap: calc(var(--size-base)*2.5);
+        column-gap: calc(var(--size-base)*5);
     }
 
     &__author_name {

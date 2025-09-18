@@ -18,7 +18,7 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
                 message: 'Неверный логин или пароль'
             });
         }
-
+        
         const dbPassword = dbResult.rows[0].password_hash //Пароль найденного юзера
         const result = await bcrypt.compare(password, dbPassword); //Сверяем пароль и хэш в бд
         const JWT_SECRET = process.env.JWT_SECRET || 'секретный_код';// Подписываем ответ токеном
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
             const token = jwt.sign( //Создаем токен и передаем его в response
                 {userId: dbUserId},
                 JWT_SECRET,
-                {expiresIn: '10h'}
+                {expiresIn: '2h'}
             )
             res.json({
                 success: true,
