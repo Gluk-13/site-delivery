@@ -22,7 +22,7 @@ function NewProduct() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:4200/api/products/new')
+        const response = await fetch('/api/products/new')
         console.log(response.status,response.statusText)
 
         if (!response.ok) {

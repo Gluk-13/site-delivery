@@ -22,7 +22,7 @@ function Sale () {
       setLoading(true); //Крутим загрузку пока не придет ответ или не получим ошибку
       setError(null);
 
-      const response = await fetch('http://localhost:4200/api/products/discounted'); //Путь к роутеру который создал на сервере
+      const response = await fetch('/api/products/discounted'); //Путь к роутеру который создал на сервере
       console.log(response.status,response.statusText)
 
       if (!response.ok) { //Раньше ни разу не видел но эта запись для response типо вычисляет диапозон 200-299 true а дальше false, ну а 
