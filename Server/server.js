@@ -8,6 +8,7 @@ import authRoutes from './routes/auth/login.js'; //Все три роута дл
 import registerRoutes from './routes/auth/register.js'//2
 import resetRoutes from './routes/auth/reset.js'//3
 import cartRoutes from './routes/cart/cartRoutes.js'
+import favourRoutes from './routes/favour/favourRoutes.js'
 
 const app = express(); //Приложение
 
@@ -45,3 +46,5 @@ app.listen(PORT, () => { //Так же просто проверка серве�
 });
 
 app.use('/api/cart', cartRoutes)
+
+app.use('/api/favourites', favourRoutes)
