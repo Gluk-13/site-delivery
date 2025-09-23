@@ -22,7 +22,7 @@ function NewProduct() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('/api/products/new')
+        const response = await fetch('http://localhost:4200/api/products/new')
         console.log(response.status,response.statusText)
 
         if (!response.ok) {
@@ -79,16 +79,24 @@ function NewProduct() {
           </div>
         </div>
         <div className={styles['new-products__container_content']}>
-          {displayedProducts.map(product => (
+          {displayedProducts.map(product => {
+          if (!product.id) {
+            console.warn('Товар без ID обнаружен:', product);
+            return null;
+          }
+          return (
           <CardContent
             key={product.id}
+            productId={product.id}
             name = {product.name}
             price = {product.price}
             discountPrice = {product.discount_price}
             imageUrl = {product.image_url}
             rating = {product.rating}
             discountPercent = {product.discount_percent}
-          />))}
+          />
+          )
+        })}
         </div>
         <PageList
         productsProps={products}
@@ -107,8 +115,14 @@ function NewProduct() {
           seeLink={'/new-product'}
         />
         <div className={styles['new-products__container_content']}>
-          {displayedProducts.map(product => (
+          {displayedProducts.map(product => {
+          if (!product.id) {
+            console.warn('Товар без ID обнаружен:', product);
+            return null;
+          }
+          return (
           <CardContent
+            productId={product.id}
             key={product.id}
             name = {product.name}
             price = {product.price}
@@ -117,7 +131,8 @@ function NewProduct() {
             rating = {product.rating}
             discountPercent = {product.discount_percent}
             />
-          ))}
+          )
+        })}
         </div>
       </section>
     )}

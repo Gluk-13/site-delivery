@@ -1,58 +1,76 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import FormPayment from './component/FormPayment/FormPayment'
 import styles from './CartPage.module.scss'
 import NavComponentSection from '../../../HomePage/section/components/Nav/NavComponentSection'
 import CardCart from './component/CardCart/CardCart'
+import { useCart } from '../../../../hooks/useCart';
 
 function CartPage() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [cartItem, setCartItem] = useState([])
-  const [isEmpty, setIsEmpty] = useState(false)
   const userId = localStorage.getItem('userId')
+  const token = localStorage.getItem('authToken')
 
-  const fetchCart = async () => {
-    const response = await fetch(`/api/cart?userId=${userId}`,{
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    try {
+  const {
+    isLoading,
+    cartData,
+    productsData,
+    isEmpty,
+    cartItemIds,
+    fetchCart,
+    refetch,
+  } = useCart();
 
-      if (!response.ok) {
-        throw new Error('Ошибка при загрузки корзины')
-      }
+  const [selectedItems, setSelectedItems] = useState([])
 
-      const cartData = await response.json()
-      setCart(cartData)
-      setIsEmpty(cartData.length < 1)
-
-      const response = await fetch('/api/products/bulk')
-
-    } catch (error) {
-      setCart([])
-      setIsEmpty(true)
-      setIsLoading(false)
-      console.error('Ошибка при получении данных корзины',error)
-    
-    } finally {
-      setIsLoading(false)
+  const getCartItems = useMemo(() => {
+    if (cartData.length === 0 || productsData.length === 0) {
+      return []
     }
+
+    return cartData.map(cartItem => {
+      const product = productsData.find(p => p.id === cartItem.productId)
+      return {
+        ...cartItem,
+        product: product || null
+      }
+    }).filter(item => item.product !== null)
+  }, [cartData, productsData])
+
+  const handleSelectAll = () => {
+    const allIds = getCartItems.map(item => item.id)
+    setSelectedItems(allIds)
   }
 
+  const handleDeleteSelected = async () => {
 
+    try {
+      const response = await fetch('http://localhost:4200/api/cart/items/:productId',{
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: selectedItems })
+      })
 
+      if (!response.ok) {
+        throw new Error('Ошибка при удалении на сервере')
+      }
 
-  useEffect (()=>{
-    fetchCart()
-  },[])
+      
+      await refetch();
+      setSelectedItems([])
+
+    } catch(error) {
+      console.error('Ошибка при удалении товаров', error)
+    }
+  }
 
   return (
     <section className={styles.cart}>
       <NavComponentSection
-        primaryLink = 'Главная'
-        secondLink = 'Корзина'
+        primaryLink='Главная'
+        secondLink='Корзина'
       />
       <div className={styles.cart__content}>
         <div className={styles.cart__content_container}>
@@ -60,7 +78,7 @@ function CartPage() {
             Корзина
           </h1>
           <div className={styles.cart__quantity_container}>
-            <p className={styles.cart__quantity}>{quantity.length}</p>
+            <p className={styles.cart__quantity}>{getCartItems.length}</p>
           </div>
         </div>
         <div className={styles.cart__container_cart}>
@@ -68,24 +86,37 @@ function CartPage() {
             <div className={styles.cart__filter_container}>
               <div className={styles.cart__filter}>
                 <input 
-                type="radio"
-                className={styles.cart__input_filter}
+                  onChange={() => handleSelectAll()}
+                  type="checkbox"
+                  checked={selectedItems.length === getCartItems.length}
+                  className={styles.cart__input_filter}
                 />
                 <p className={styles.cart__descr_filter}>Выделить всё</p>
               </div>
-              <a href="#!" className={styles.cart__delete_link}>Удалить выбранные</a>
+              <button disabled={selectedItems>=0} onClick={handleDeleteSelected} className={styles.cart__delete_link}>Удалить выбранные</button>
             </div>
             <div className={styles.cart__list}>
-              {isLoading === true ? (<p>Загрузка...</p>) : isEmpty === true ? (<p>Корзина пустая</p>) : cart.product.map(item => {
-                <CardCart
-                key={item.product.id}
-                product={item.product}
-                quantity={item.quantity} 
-                />
-              })}
+              {isLoading ? (
+                <p>Загрузка...</p>
+              ) : isEmpty ? (
+                <p>Корзина пустая</p>
+              ) : (
+                getCartItems.map(item => (
+                  <CardCart
+                    key={item.id || item.productId}
+                    product={item.product}
+                    productQuantity={item.quantity}
+                    cartItemId={item.id}
+                    price={item.price}
+                    imageUrl={item.image_url}
+                    onUpdate={fetchCart}
+                    selectedItem={selectedItems}
+                  />
+                ))
+              )}
             </div>
           </div>
-          <FormPayment/>
+          <FormPayment items={getCartItems} />
         </div>
       </div>
     </section>

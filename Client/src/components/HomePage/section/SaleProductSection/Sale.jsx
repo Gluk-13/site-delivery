@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react'
 import styles from './Sale.module.scss'
 import ContentTitle from '../components/ContentTitle/ContentTitle'
 import CardContent from '../components/CardContent/CardContent'
-import { useLocation, Link } from 'react-router-dom';
-import NavComponentSection from '../components/Nav/NavComponentSection';
-import PageList from '../components/PageList/PageList';
+import { useLocation } from 'react-router-dom'
+import NavComponentSection from '../components/Nav/NavComponentSection'
+import PageList from '../components/PageList/PageList'
 //Подключаем все нужные библиотеки и компоненты
 
 function Sale () { 
@@ -13,7 +13,7 @@ function Sale () {
   const [error, setError] = useState (null); //Создаем хуки для рендеринга компонентов
   const [currentPage, setCurrentPage] = useState(1); // Текущая страница
   const [productsPerPage, setProductsPerPage] = useState(10); //Количесто продуктов на странице
-  const location = useLocation()//Определяем путь
+  const location = useLocation()
 
   const isFullSection = location.pathname === '/sale'
 
@@ -22,8 +22,7 @@ function Sale () {
       setLoading(true); //Крутим загрузку пока не придет ответ или не получим ошибку
       setError(null);
 
-      const response = await fetch('/api/products/discounted'); //Путь к роутеру который создал на сервере
-      console.log(response.status,response.statusText)
+      const response = await fetch('http://localhost:4200/api/products/discounted'); //Путь к роутеру который создал на сервере
 
       if (!response.ok) { //Раньше ни разу не видел но эта запись для response типо вычисляет диапозон 200-299 true а дальше false, ну а 
       // "!" знак для того чтобы цикл выполнился при ошибке
@@ -54,10 +53,6 @@ function Sale () {
     fetchDiscountedProducts(); // при монтировании компонента, юзер зашел на страницу 
   }, []);
 
-    useEffect(() => {
-    setCurrentPage(1);
-  }, [products]);
-
   if(loading) {
     return <div className={styles.sale__err}>Загрузка товаров</div>
   }
@@ -69,37 +64,45 @@ function Sale () {
   if (products.length === 0) {
     return <div className={styles.sale__err}>Нет товаров со скидкой</div>;
   }
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const currentProducts = products.slice(startIndex, startIndex + productsPerPage);
 
-  const displayedProducts = isFullSection ? currentProducts
-  : products.slice(0,5)
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const currentProducts = products.slice(startIndex, startIndex + productsPerPage)
+  
+  const displayedProducts = isFullSection ? currentProducts : products.slice(0,5)
 
   if (isFullSection) { return (
-      <section className={styles.sale}>
+      <section className={styles['sale']}>
         <NavComponentSection
           primaryLink='Главная'
           secondLink='Акции'
         />
-        <div className={styles.sale__content_container}>
-          <h1 className={styles.sale__container_title}>
-            Товары по акции
+        <div className={styles['sale__content_container']}>
+          <h1 className={styles['sale__container_title']}>
+            Акции
           </h1>
-          <div className={styles.sale__quantity_container}>
-            <p className={styles.sale__quantity}>{products.length}</p>
+          <div className={styles['sale__quantity_container']}>
+            <p className={styles['sale__quantity']}>{products.length}</p>
           </div>
         </div>
-        <div className={styles.sale__container_content}>
-          {displayedProducts.map(product => (
-          <CardContent
-            key={product.id}
-            name = {product.name}
-            price = {product.price}
-            discountPrice = {product.discount_price}
-            imageUrl = {product.image_url}
-            rating = {product.rating}
-            discountPercent = {product.discount_percent}
-          />))}
+        <div className={styles['sale__container_content']}>
+          {displayedProducts.map(product => {
+          if (!product.id) {
+            console.warn('Товар без ID обнаружен:', product);
+            return null;
+          }
+            return (
+              <CardContent
+                productId={product.id}
+                key={product.id}
+                name = {product.name}
+                price = {product.price}
+                discountPrice = {product.discount_price}
+                imageUrl = {product.image_url}
+                rating = {product.rating}
+                discountPercent = {product.discount_percent}
+              />
+            );
+          })}
         </div>
         <PageList
         productsProps={products}
@@ -111,14 +114,19 @@ function Sale () {
       </section>
     )} else {
     return (
-      <section className={styles.sale}>
+      <section className={styles['sale']}>
         <ContentTitle
           titleText='Акции'
           buttonText='Все акции'
-          seeLink={'sale'}
+          seeLink={'/sale'}
         />
-        <div className={styles.sale__container_content}>
-          {displayedProducts.map(product => (
+        <div className={styles['sale__container_content']}>
+          {displayedProducts.map(product => {
+          if (!product.id) {
+            console.warn('Товар без ID обнаружен:', product);
+            return null;
+          }
+          return (
           <CardContent
             key={product.id}
             name = {product.name}
@@ -127,8 +135,10 @@ function Sale () {
             imageUrl = {product.image_url}
             rating = {product.rating}
             discountPercent = {product.discount_percent}
+            productId={product.id}
             />
-          ))}
+          )
+        })}
         </div>
       </section>
     )}

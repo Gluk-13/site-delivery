@@ -1,0 +1,105 @@
+.card {
+    display: flex;
+    min-width: 100%;
+    height: calc(var(--size-base)*18);
+    background-color: var(--font-white);
+    justify-content: space-between;
+    border-radius: 5px;
+
+    &__container_img {
+        display: block;
+        height: 100%;
+
+        padding-bottom: calc(var(--size-base)*3);
+    }
+
+    &__img {
+        width: 100%;
+        height: 100%;
+        padding-bottom: calc(var(--size-base)*3);
+        z-index: 2;
+    }
+
+    &__radio {
+        width: calc(var(--size-base)*6);
+        height: calc(var(--size-base)*6);
+        position: absolute;
+        z-index: 3;
+        background-color: var(--border-green);
+    }
+
+    &__container_info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding-right: calc(var(--size-base)*4);
+    }
+
+    &__info_title {
+        font-family: 'Rubik';
+        font-size: calc(var(--size-base)*4);
+        color: var(--font-black);
+        font-weight: 400;
+    }
+
+    &__info_descr {
+        font-family: 'Rubik';
+        font-size: calc(var(--size-base)*3);
+        color: var(--font-black);
+        font-weight: 400;
+    }
+
+    &__container_quantity {
+        display: flex;
+        padding-bottom: calc(var(--size-base)*3);
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__container_btn {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__btn_container {
+        display: flex;
+        width: calc(var(--size-base)*25);
+        height: calc(var(--size-base)*10);
+        justify-content: space-around;
+        align-items: center;
+        background-color: var(--border-green);
+        border-radius: 5px;
+    }
+
+    &__container_price {
+        display: flex;
+        justify-content: end;
+        min-width: calc(var(--size-base)*25);
+    }
+
+    &__quantity_price {
+        padding-right: calc(var(--size-base)*3);
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*4.5);
+        font-weight: 700;
+    }
+
+    &__descr_gray {
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*3);
+        color: var(--font-gray);
+    }
+
+    &__info_container {
+        display: flex;
+        column-gap: calc(var(--size-base)*2);
+    }
+
+    &__quantity_descr {
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*4);
+        color: var(--font-white);
+        font-weight: 400;
+    }
+}

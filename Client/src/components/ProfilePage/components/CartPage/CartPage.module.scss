@@ -45,6 +45,7 @@
     }
 
     &__container_list {
+        width: 100%;
         display: flex;
         flex-direction: column;
         width: calc(var(--size-base)*224);
@@ -80,7 +81,9 @@
 
     &__list {
         display: flex;
-        width: calc(var(--size-base)*218.5);
+        flex-direction: column;
+        width: calc(var(--size-base)*250);
         height: calc(var(--size-base)*94.5);
+        row-gap: calc(var(--size-base)*6);
     }
 }

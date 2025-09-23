@@ -103,7 +103,7 @@
         column-gap: calc(var(--size-base)*1);
     }
 
-    &__bascket_btn {
+    &__cart_btn {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -119,6 +119,43 @@
             background-color: var(--primary-color);
             color: var(--font-white);
             border: none;
+        }
+    }
+
+    &__added_container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__container_btn {
+        display: flex;
+        column-gap: calc(var(--size-base)*5);
+    }
+
+    &__added_descr {
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*3.5);
+        color: var(--font-black);
+        font-weight: 700;
+    }
+
+    &__added_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*10);
+        height: calc(var(--size-base)*10);
+        background-color: var(--border-green);
+        border-radius: 5px;
+        color: var(--font-white);
+
+        &:hover {
+            opacity: 0.7;
+        }
+
+        &:active {
+            opacity: 0.9;
         }
     }
 }

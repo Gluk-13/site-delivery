@@ -1,10 +1,48 @@
 import React from 'react'
 import styles from './CardContent.module.scss'
+import { useAddToCart } from '../../../../../hooks/useAddToCart';
+import { useState, useEffect } from 'react';
+import { useCart } from '../../../../../hooks/useCart';
 
 
 
-function CardContent({ name, price, discountPrice, imageUrl, rating, discountPercent }) {
+function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent }) {
+    const { addToCart, isLoading, isError, clearError } = useAddToCart()
+    const [isAdded, setIsAdded] = useState(false)
+    const [quantity, setQuantity] = useState(1)
     const percentFloor = Math.floor(discountPercent)
+    const {
+        cartData,
+        productsData,
+        refetch,
+    } = useCart()
+
+    const handleAddToCart = async (qty = quantity) => {
+        const response = await addToCart(productId, qty)
+        if (response.success) {
+            setIsAdded(true)
+            refetch();
+        }
+    }
+
+    const handleAddedClick = () => {
+        handleAddToCart(1)
+    }
+
+    const handleIncrement = () => {
+        const newQuantity = quantity + 1
+        setQuantity(newQuantity)
+        handleAddToCart(newQuantity)
+    }
+
+    const handleDecrement = () => {
+        if(quantity > 1) {
+            const newQuantity = quantity - 1
+            setQuantity(newQuantity)
+            handleAddToCart(newQuantity)
+        }
+    }
+
     function CalcStars (rating) {
         const stars = [];
         const fullStars = Math.floor(rating)
@@ -27,6 +65,17 @@ function CardContent({ name, price, discountPrice, imageUrl, rating, discountPer
         
         return stars;
     }
+
+    useEffect(() => {
+    const cartItem = cartData.find(item => item.productId === productId);
+    if (cartItem) {
+        setIsAdded(true);
+        setQuantity(cartItem.quantity || 1);
+    } else {
+        setIsAdded(false);
+        setQuantity(1);
+    }
+    }, [cartData, productId]);
 
   return (
     <div className={styles.card}>
@@ -76,7 +125,41 @@ function CardContent({ name, price, discountPrice, imageUrl, rating, discountPer
             <div className={styles.card__score_product}>
                 {CalcStars(rating)}
             </div>
-            <button className={styles.card__bascket_btn}>В корзину</button>
+            {!isAdded ? (
+                <button className={styles.card__cart_btn}
+                onClick={handleAddedClick}
+                >
+                    { isLoading ? 'Добавление...' : 'В корзину'}
+                </button>) : (
+                <div className={styles.card__added_container}>
+                    { isError && (
+                        <div className={styles.card__error_container}>
+                            <p className={styles.card__error_message}>
+                                {isError}
+                            </p>
+                            <button onClick={clearError}>x</button>
+                        </div>
+                    )}
+                    <p className={styles.card__added_descr}>
+                        Добавлено: {quantity} шт.
+                    </p>
+                    <div className={styles.card__container_btn}>
+                        <button 
+                        className={styles.card__added_btn}
+                        onClick={handleIncrement}
+                        >
+                            +
+                        </button>
+                        <button 
+                        className={styles.card__added_btn}
+                        onClick={handleDecrement}
+                        disabled={quantity <= 1}
+                        >
+                            -
+                        </button>
+                    </div>
+                </div>
+                )}
         </div>
     </div>
   )

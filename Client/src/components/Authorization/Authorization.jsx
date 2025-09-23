@@ -23,7 +23,7 @@ const Authorization = () => {
         setLoading(true); //Ставим загрузку пока не получим ответ из fetch 
         setMessage(''); //Пустое сообщение до ошибки
         try {
-            const response = await fetch('/api/users/login',{ //Дожидаемся ответа из фетч запроса
+            const response = await fetch('http://localhost:4200/api/users/login',{ //Дожидаемся ответа из фетч запроса
                 method: 'POST', // POST потому что сверяем данные при авторизации
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -116,7 +116,7 @@ const Authorization = () => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await fetch('/api/users/register',{
+            const response = await fetch('http://localhost:4200/api/users/register',{
                 method: 'PUT',
                 headers: {'Content-type':'application/json'},
                 body: JSON.stringify({
@@ -232,7 +232,7 @@ const Authorization = () => {
         setMessage('');
 
         try {
-            const response = await fetch('/api/users/reset/', {
+            const response = await fetch('http://localhost:4200/api/users/reset/', {
                 method: 'PATCH',
                 headers: {'Content-type':'application/json'},
                 body: JSON.stringify ({

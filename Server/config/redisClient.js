@@ -1,19 +1,29 @@
-import Redis from 'ioredis';
 import dotenv from 'dotenv';
+import Redis from 'ioredis';
 
-dotenv.config()
+dotenv.config();
 
-const redisClient = new Redis({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
-})
+let redisClientInstance = null;
 
-redisClient.on('', (err) => {
-    console.error('Redis не работает проблемы с подключением',err)
-})
+const getRedisClient = () => {
+  if (!redisClientInstance) {
+    redisClientInstance = new Redis({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: process.env.REDIS_PORT || 6379,
+      connectTimeout: 1000,
+      retryStrategy: (times) => Math.min(times * 50, 3000)
+    });
 
-redisClient.on('connect', () => {
-    console.log('Redis подключен!')
-})
+    redisClientInstance.on('connect', () => {
+      console.log('Redis успешно подключён!');
+    });
 
-export default redisClient;
+    redisClientInstance.on('error', (err) => {
+      console.error('Ошибка подключения к Redis:', err);
+    });
+  }
+  
+  return redisClientInstance;
+};
+
+export default getRedisClient;
