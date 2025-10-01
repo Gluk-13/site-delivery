@@ -1,8 +1,8 @@
 import express from 'express'; //фреймворк
-import ViteExpress from 'vite-express'; //связь с vite
 import cors from 'cors'; //хз пока, не вникал
 import path from 'path'; // нужна для разрешения использовать папку со статичными файлами фронту
 import 'dotenv/config'; // очередной конфиг а вот че он делает...
+
 import productsRoutes from './routes/products/products.js';//Роут для товаров в приложении(Информация)
 import authRoutes from './routes/auth/login.js'; //Все три роута для авторизации 1
 import registerRoutes from './routes/auth/register.js'//2
@@ -38,7 +38,7 @@ app.get('/api/test', (req, res) => {
 })
 
 //Порт сервера, либо прописанный в .env либо 4200 как стандартный
-const PORT = process.env.PORT || 4200;
+const PORT = process.env.PORT
 
 app.listen(PORT, () => { //Так же просто проверка сервера в терминале IDE 
     console.log(`Сервер запущен на порту ${PORT}`);

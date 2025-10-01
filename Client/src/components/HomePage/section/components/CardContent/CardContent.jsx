@@ -10,6 +10,7 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
     const { addToCart, isLoading, isError, clearError } = useAddToCart()
     const [isAdded, setIsAdded] = useState(false)
     const [quantity, setQuantity] = useState(1)
+    const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
     const percentFloor = Math.floor(discountPercent)
     const {
         cartData,
@@ -80,7 +81,7 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
   return (
     <div className={styles.card}>
         <div className={styles.card__container_img} style={{
-            backgroundImage:`url('http://localhost:4200/api/uploads/${imageUrl}')`,
+            backgroundImage:`url('${API_BASE_URL}/uploads/${imageUrl}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
         }}

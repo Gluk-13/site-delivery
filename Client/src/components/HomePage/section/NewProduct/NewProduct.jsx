@@ -17,12 +17,13 @@ function NewProduct() {
 
     const isFullSection = location.pathname === '/new-product'
 
+    const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
     const fetchNewProducts = async () => {
         try {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:4200/api/products/new')
+        const response = await fetch(`${API_BASE_URL}/products/new`)
         console.log(response.status,response.statusText)
 
         if (!response.ok) {

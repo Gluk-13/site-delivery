@@ -1,9 +1,9 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
 export const useAddToCart = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(null)
-
+    const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
     const addToCart = async (productId, quantity = 1) => {
         setIsLoading(true);
         setIsError(null)
@@ -11,7 +11,7 @@ export const useAddToCart = () => {
         try {
             const userId = localStorage.getItem('userId')
             const token = localStorage.getItem('authToken')
-            const response = await fetch('http://localhost:4200/api/cart/items', {
+            const response = await fetch(`${API_BASE_URL}/cart/items`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

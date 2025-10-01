@@ -19,7 +19,6 @@ build/
 Thumbs.db
 
 # Server specific
-Server/uploads/
 Server/.env
 
 # Client specific

@@ -1,6 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import pool from '../../db.js'; // Пул PostgreSQL
+import pool from '../../config/db.js';
 
 const router = express.Router();
 

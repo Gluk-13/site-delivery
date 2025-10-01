@@ -16,13 +16,14 @@ function Sale () {
   const location = useLocation()
 
   const isFullSection = location.pathname === '/sale'
+  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
 
   const fetchDiscountedProducts = async () => { // Функция для API запроса на сервер
     try {
       setLoading(true); //Крутим загрузку пока не придет ответ или не получим ошибку
       setError(null);
 
-      const response = await fetch('http://localhost:4200/api/products/discounted'); //Путь к роутеру который создал на сервере
+      const response = await fetch(`${API_BASE_URL}/products/discounted`); //Путь к роутеру который создал на сервере
 
       if (!response.ok) { //Раньше ни разу не видел но эта запись для response типо вычисляет диапозон 200-299 true а дальше false, ну а 
       // "!" знак для того чтобы цикл выполнился при ошибке

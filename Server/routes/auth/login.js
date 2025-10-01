@@ -2,7 +2,7 @@ import { authenticateToken } from '../../middleware/auth.js'
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import pool from '../../db.js'; //Пул подключения к PostgreSQL
+import pool from '../../config/db.js';
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
         console.error('Ошибка сервера при авторизации',error)
         res.status(500).json({
             success: false,
-            message: 'Ошибка сервера'
+            message: `Ошибка сервера ${dbResult ? dbResult.rows[0] : 'неизвестная ошибка'}`
         })
     }
 });

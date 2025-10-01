@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import pool from '../../db.js';
-
+import pool from '../../config/db.js'
 router.post('/bulk', async (req, res) => {
     const { ids } = req.body;
     

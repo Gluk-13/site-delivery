@@ -7,8 +7,10 @@ function CardCart( { productQuantity, product, onUpdate, selectedItem } ) {
     const { addToCart, isLoading, isError, clearError } = useAddToCart()
     const [quantity, setQuantity] = useState(productQuantity || 1)
     const [isFinallyPrice, setIsFinallyPrice] = useState (price * (productQuantity || 1))
-    const baseUrl = '/api/uploads'
+    const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
+    const baseUrl = API_BASE_URL+imageUrl
     const [isAdded, setIsAdded] = useState(false)
+    const [imageError, setImageError] = useState(false);
 
 
 
@@ -39,7 +41,12 @@ function CardCart( { productQuantity, product, onUpdate, selectedItem } ) {
   return (
     <div className={styles.card}>
         <div className={styles.card__container_img}>
-            <img className={styles.card__img} src={`${baseUrl}${imageUrl}`} alt="Картинка товара" />
+            <img className={styles.card__img} 
+            src={`${baseUrl}`} 
+            alt="Картинка товара"
+            onError={() => setImageError(true)} 
+            />
+            {imageError && <div className={styles.card__placeholder}>Ошибка загрузки</div>}
             <label className={styles.card__checkbox}>
                 <input 
                     id={`checkbox-${id}`} 

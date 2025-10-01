@@ -1,4 +1,4 @@
-import favouriteService from '../services/favouriteService'
+import favouriteService from '../services/favouriteService.js'
 
 class FavourController {
     async getFavour(req, res, next) {

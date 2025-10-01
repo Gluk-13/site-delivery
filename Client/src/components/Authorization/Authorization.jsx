@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import styles from './Authorization.module.scss'
 import { useNavigate } from 'react-router-dom';
+
 
 const Authorization = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false); //Загрузка
     const [message, setMessage] = useState(''); //Сообщение от формы
     const [currentView, setCurrentView] = useState('login'); //Определяем какой компонент показать
- 
     const [loginData, setLoginData] = useState({ email: '', password: ''}) //Настраиваем что ждем от форм логин, регистрации и смены пароля
     const [registerData, setRegisterData] = useState({ 
         name: '',
@@ -15,7 +15,8 @@ const Authorization = () => {
         password: '',
         confirmPassword: ''
     })
-    const [resetData, setResetData] = useState({ email: ''});
+    const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
+    const [resetData, setResetData] = useState({ email: '', password: '', confirmPassword: ''});
 
     //Логин и его обработка
     const handleLogin = async (e) => {
@@ -23,7 +24,7 @@ const Authorization = () => {
         setLoading(true); //Ставим загрузку пока не получим ответ из fetch 
         setMessage(''); //Пустое сообщение до ошибки
         try {
-            const response = await fetch('http://localhost:4200/api/users/login',{ //Дожидаемся ответа из фетч запроса
+        const response = await fetch(`${API_BASE_URL}/users/login`,{ //Дожидаемся ответа из фетч запроса
                 method: 'POST', // POST потому что сверяем данные при авторизации
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -31,6 +32,10 @@ const Authorization = () => {
                     password: loginData.password
                 }), //Парсим то что ввел клиент и отправляем на сервер
             })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error status: ${response.status}`)
+            }
 
             const data = await response.json(); //Дожидаемся пока данные станут формата json
 
@@ -116,7 +121,7 @@ const Authorization = () => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await fetch('http://localhost:4200/api/users/register',{
+            const response = await fetch(`${API_BASE_URL}/users/register`,{
                 method: 'PUT',
                 headers: {'Content-type':'application/json'},
                 body: JSON.stringify({
@@ -232,7 +237,7 @@ const Authorization = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:4200/api/users/reset/', {
+            const response = await fetch(`${API_BASE_URL}/users/reset/`, {
                 method: 'PATCH',
                 headers: {'Content-type':'application/json'},
                 body: JSON.stringify ({

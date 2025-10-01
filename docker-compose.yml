@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: food_delivery 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1833
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  backend:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    ports:
+      - "4201:4201"
+
+    networks:
+      - default
+
+    environment:
+      PORT: 4201
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: food_delivery
+      DB_USER: postgres
+      DB_PASSWORD: 1833
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DOCKER_ENV: true
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build: 
+      context: ./Client              
+      dockerfile: Dockerfile
+
+    networks:
+      - default
+
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:

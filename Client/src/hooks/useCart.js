@@ -1,5 +1,5 @@
 // useCart.js
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export const useCart = () => {
   const userId = localStorage.getItem('userId');
@@ -9,10 +9,10 @@ export const useCart = () => {
   const [productsData, setProductsData] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const [cartItemIds, setCartItemIds] = useState([]);
-
+  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
   const fetchCart = async () => {
     try {
-      const response = await fetch(`http://localhost:4200/api/cart?userId=${userId}`, {
+      const response = await fetch(`/api/cart?userId=${userId}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ export const useCart = () => {
   const fetchProducts = async (cartItemsFromServer) => {
     try {
       const productIds = cartItemsFromServer.map(item => item.productId);
-      const response = await fetch('http://localhost:4200/api/products/bulk', {
+      const response = await fetch(`${API_BASE_URL}/products/bulk`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

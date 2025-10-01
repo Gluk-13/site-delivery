@@ -1,0 +1,45 @@
+# Node.js модули
+**/node_modules/
+**/npm-debug.log
+**/.npm
+
+# Логи
+**/*.log
+**/logs
+
+# Кэш сборки
+**/.cache
+**/dist
+**/build
+
+# Системные файлы
+**/.DS_Store
+**/Thumbs.db
+
+# Git
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Environment variables
+**/.env
+**/.env.local
+**/.env.production
+
+# IDE файлы
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# Документация
+**/README.md
+**/CHANGELOG.md
+
+# Тесты и покрытие кода
+**/coverage
+**/.nyc_output
+
+# Временные файлы
+**/tmp
+**/.tmp

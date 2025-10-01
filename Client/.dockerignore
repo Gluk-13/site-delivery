@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+dist
+build
+.cache
+.parcel-cache
+.env
+.env.local
+.DS_Store

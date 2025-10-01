@@ -9,7 +9,7 @@ import { useCart } from '../../../../hooks/useCart';
 function CartPage() {
   const userId = localStorage.getItem('userId')
   const token = localStorage.getItem('authToken')
-
+  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
   const {
     isLoading,
     cartData,
@@ -44,7 +44,7 @@ function CartPage() {
   const handleDeleteSelected = async () => {
 
     try {
-      const response = await fetch('http://localhost:4200/api/cart/items/:productId',{
+      const response = await fetch(`${API_BASE_URL}/cart/items/:productId`,{
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
