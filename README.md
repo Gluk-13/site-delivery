@@ -26,10 +26,10 @@ Backend:
 5.Реализован мидлвар по защите API маршрутов с клиента
 
 Redis: 
-1.
+1.Написана корзина и избранное по id пользователя
 
 Postgres: 
-1.
+1. Созданы первые миграционные файлы
 
 Git: 
 1.Conventional Commits 
@@ -45,8 +45,15 @@ chore:   Вспомогательные изменения
 ## Запуск
 
 1. Установите [Docker](https://docker.com) и [Git](https://git-scm.com)
-2. Выполните одну команду:
-```bash
+2. Откройте любую IDE или терминал компьютера Linux -bash Windows -PowerShell и выполните эту команду
+
 git clone https://github.com/Gluk-13/site-delivery.git && cd site-delivery && docker-compose up --build
 
-3. Запуск клиентской части в браузере http://localhost:3000 
+2.1 Или выполните 3 команды по очереди , если прошлая команда не сработала
+
+1) git clone https://github.com/Gluk-13/site-delivery.git
+2) cd site-delivery
+3) docker-compose up --build
+
+3. Запуск клиентской части в браузере http://localhost:3000
+Приступайте к просмотру
