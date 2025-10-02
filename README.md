@@ -25,6 +25,23 @@ Backend:
 4.Реализовано хэширование паролей
 5.Реализован мидлвар по защите API маршрутов с клиента
 
+Redis: 
+1.
+
+Postgres: 
+1.
+
+Git: 
+1.Conventional Commits 
+
+feat:    Новая функциональность
+fix:     Исправление бага
+docs:    Документация
+style:   Форматирование
+refactor: Рефакторинг
+test:    Тесты
+chore:   Вспомогательные изменения
+
 ## Запуск
 
 1. Установите [Docker](https://docker.com) и [Git](https://git-scm.com)
