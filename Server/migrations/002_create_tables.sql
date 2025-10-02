@@ -1,13 +1,16 @@
 
 --Создаем первые таблицы
 
-CREATE TABLE public.permissions (
+\c food_delivery;
+
+CREATE TABLE IF NOT EXISTS public.permissions (
     id integer DEFAULT nextval('public.permissions_id_seq'::regclass) NOT NULL,
     code character varying(100) NOT NULL,
     description text
 );
 
-CREATE TABLE public.products (
+-- ... остальные таблицы как были
+CREATE TABLE IF NOT EXISTS public.products (
     id integer DEFAULT nextval('public.products_id_seq'::regclass) NOT NULL,
     name character varying(255) NOT NULL,
     price numeric(10,2) NOT NULL,
@@ -22,17 +25,17 @@ CREATE TABLE public.products (
     CONSTRAINT products_price_check CHECK ((price > (0)::numeric))
 );
 
-CREATE TABLE public.role_permissions (
+CREATE TABLE IF NOT EXISTS public.role_permissions (
     role_id integer NOT NULL,
     permission_id integer NOT NULL
 );
 
-CREATE TABLE public.roles (
+CREATE TABLE IF NOT EXISTS public.roles (
     id integer DEFAULT nextval('public.roles_id_seq'::regclass) NOT NULL,
     name character varying(250) NOT NULL
 );
 
-CREATE TABLE public.users (
+CREATE TABLE IF NOT EXISTS public.users (
     id integer DEFAULT nextval('public.users_id_seq'::regclass) NOT NULL,
     email character varying(255) NOT NULL,
     password_hash character varying(200) NOT NULL,

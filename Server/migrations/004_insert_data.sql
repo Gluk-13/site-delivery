@@ -1,6 +1,9 @@
 --Добавляем первые данные
 
 --Возможности
+\c food_delivery;
+
+-- Permissions
 INSERT INTO public.permissions (id, code, description) VALUES
 (1, 'view_products', 'Просмотр товаров'),
 (2, 'create_product', 'Создание товаров'),
@@ -8,26 +11,30 @@ INSERT INTO public.permissions (id, code, description) VALUES
 (4, 'delete_product', 'Удаление товаров'),
 (5, 'view_orders', 'Просмотр заказов'),
 (6, 'edit_order', 'Редактирование заказов'),
-(7, 'manager_users', 'Управление пользователями');
+(7, 'manager_users', 'Управление пользователями')
+ON CONFLICT (id) DO NOTHING;
 
---Роли
+-- Roles
 INSERT INTO public.roles (id, name) VALUES
 (1, 'customer'),
 (2, 'admin'),
-(3, 'manager');
+(3, 'manager')
+ON CONFLICT (id) DO NOTHING;
 
---Роли-возможности(мост)
+-- Role-Permissions
 INSERT INTO public.role_permissions (role_id, permission_id) VALUES
 (1, 1), (1, 5),
 (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7),
-(3, 1), (3, 2), (3, 3), (3, 5), (3, 6);
+(3, 1), (3, 2), (3, 3), (3, 5), (3, 6)
+ON CONFLICT (role_id, permission_id) DO NOTHING;
 
---Первые пользователи
+-- Users
 INSERT INTO public.users (id, email, password_hash, role_id, name) VALUES
 (1, 'manager@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 'Unknown'),
 (2, 'user@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 'Unknown'),
 (3, 'admin@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 'Unknown'),
-(4, 'art.nek.13@gmail.com', '$2b$10$eIjgxgpKzd.GoBll11oKe.l2HvMscI55hRH7/dYWxGg9ZOHZHaWYC', NULL, 'Артем');
+(4, 'art.nek.13@gmail.com', '$2b$10$eIjgxgpKzd.GoBll11oKe.l2HvMscI55hRH7/dYWxGg9ZOHZHaWYC', NULL, 'Артем')
+ON CONFLICT (id) DO NOTHING;
 
 --Первые товары
 INSERT INTO public.products (id, name, price, discount_percent, category, created_at, updated_at, image_url, rating) VALUES
@@ -76,4 +83,5 @@ INSERT INTO public.products (id, name, price, discount_percent, category, create
 (44, 'Груши Конференц', 210.00, 20.00, 'fruits', '2025-09-14 16:32:11.058018', '2025-09-14 16:32:11.058018', 'product37.png', 4.4),
 (45, 'Мандарины', 180.00, 25.00, 'fruits', '2025-09-14 16:32:11.058018', '2025-09-14 16:32:11.058018', 'product38.png', 4.5),
 (46, 'Лимоны', 150.00, 20.00, 'fruits', '2025-09-14 16:32:11.058018', '2025-09-14 16:32:11.058018', 'product39.png', 4.3),
-(47, 'Авокадо', 320.00, 40.00, 'fruits', '2025-09-14 16:32:11.058018', '2025-09-14 16:32:11.058018', 'product40.png', 4.8);
+(47, 'Авокадо', 320.00, 40.00, 'fruits', '2025-09-14 16:32:11.058018', '2025-09-14 16:32:11.058018', 'product40.png', 4.8)
+ON CONFLICT (id) DO NOTHING;

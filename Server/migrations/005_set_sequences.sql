@@ -1,6 +1,8 @@
 --Устанавливаем значения последовательностей
 
-SELECT pg_catalog.setval('public.permissions_id_seq', 7, true);
-SELECT pg_catalog.setval('public.products_id_seq', 47, true);
-SELECT pg_catalog.setval('public.roles_id_seq', 3, true);
-SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+\c food_delivery;
+
+SELECT setval('public.permissions_id_seq', COALESCE((SELECT MAX(id) FROM public.permissions), 1), false);
+SELECT setval('public.products_id_seq', COALESCE((SELECT MAX(id) FROM public.products), 1), false);
+SELECT setval('public.roles_id_seq', COALESCE((SELECT MAX(id) FROM public.roles), 1), false);
+SELECT setval('public.users_id_seq', COALESCE((SELECT MAX(id) FROM public.users), 1), false);

@@ -1,6 +1,8 @@
 --Добавляем ограничения
 
--- Primary Key
+\c food_delivery;
+
+-- Primary Keys
 ALTER TABLE ONLY public.permissions ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.products ADD CONSTRAINT products_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.roles ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
