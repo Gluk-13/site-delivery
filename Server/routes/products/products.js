@@ -33,10 +33,11 @@ router.post('/bulk', async (req, res) => {
 
         const dbQuery = await pool.query(query, [ids])
 
-        res.json({
+        res.status(200).json({
             success: true,
             data: dbQuery.rows
         })
+        
     } catch (error) {
         console.error('Ошибка в POST /api/products/bulk:', error);
         res.status(500).json({
