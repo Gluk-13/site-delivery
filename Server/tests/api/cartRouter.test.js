@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { describe, jest, test, expect, beforeEach } from '@jest/globals';
-
+import express from 'express'
 
 jest.unstable_mockModule('../../services/cartService.js', () => ({
   default: {
@@ -20,26 +20,35 @@ jest.unstable_mockModule('../../middleware/auth.js', () => ({
   })
 }));
 
-const { default: app } = await import('../../app.js');
+const { default: cartRoutes } = await import('../../routes/cart/cartRoutes.js');
 const { default: cartService } = await import('../../services/cartService.js');
 
 describe('Cart API Routes', () => {
+  let app;
+
   beforeEach(() => {
+
+    app = express();
+    app.use(express.json());
+    app.use('/api/cart', cartRoutes);
+    
     jest.clearAllMocks();
   });
 
-  test('GET /api/cart should return user cart', async () => {
-    const mockCart = [
-      { id: '1', productId: '1', quantity: 2 }
-    ];
+  describe('GET /api/cart/', () => {
+    test('should return user cart', async () => {
+      const mockCart = [
+        { id: '1', productId: '1', quantity: 2 }
+      ];
 
-    cartService.getCart.mockResolvedValue(mockCart);
+      cartService.getCart.mockResolvedValue(mockCart);
 
-    const response = await request(app)
-      .get('/api/cart')
-      .expect(200);
+      const response = await request(app)
+        .get('/api/cart')
+        .expect(200);
 
-    expect(response.body).toEqual(mockCart);
-    expect(cartService.getCart).toHaveBeenCalledWith('user123');
-  });
+      expect(response.body).toEqual(mockCart);
+      expect(cartService.getCart).toHaveBeenCalledWith('user123');
+    });
+  })
 });

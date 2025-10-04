@@ -37,14 +37,4 @@ app.get('/api/test', (req, res) => {
 })
 
 export default app;
-//Порт сервера, либо прописанный в .env либо 4200 как стандартный
-const PORT = process.env.PORT
-
-if (process.env.NODE_ENV !== 'test') {
-    const PORT = process.env.PORT || 4200;
-    app.listen(PORT, () => {
-        console.log(`Сервер запущен на порту ${PORT}`);
-        console.log(`Проверить его можно здесь: http://localhost:${PORT}/api/test`);
-    });
-}
 
