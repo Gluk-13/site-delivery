@@ -9,7 +9,7 @@ import { useCart } from '../../../../hooks/useCart';
 function CartPage() {
   const userId = localStorage.getItem('userId')
   const token = localStorage.getItem('authToken')
-  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const {
     isLoading,
     cartData,

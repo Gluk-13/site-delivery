@@ -11,6 +11,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./Server/migrations:/docker-entrypoint-initdb.d
+    mem_limit: 512m
+    mem_reservation: 256m
 
   redis:
     image: redis:7-alpine
@@ -25,13 +27,13 @@ services:
       context: ./Server
       dockerfile: Dockerfile
     ports:
-      - "4201:4201"
+      - "4200:4200"
 
     networks:
       - default
 
     environment:
-      PORT: 4201
+      PORT: 4200
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: food_delivery
@@ -40,9 +42,12 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       DOCKER_ENV: true
+      NODE_ENV: production
     depends_on:
       - postgres
       - redis
+    mem_limit: 512m
+    mem_reservation: 256m
 
   frontend:
     build: 

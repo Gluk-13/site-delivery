@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:docker\" \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:docker": "docker-compose up postgres redis",
-    "dev:docker:build": "docker-compose up --build postgres redis",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:docker": "docker-compose up postgres redis backend",
     "dev:server": "cd Server && npm run dev",
-    "dev:client": "cd Client && npm start",
+    "dev:client": "cd Client && npx vite",
+    "dev:full": "concurrently \"npm run dev:docker\" \"npm run dev:client\"",
     "docker:down": "docker-compose down",
     "docker:clean": "docker-compose down -v --remove-orphans",
-    "install:all": "npm install && cd Server && npm install && cd ../Client && npm install"
+    "install:all": "npm install && cd Server && npm install && cd ../Client && npm install",
+    "build:all": "cd Client && npm run build",
+    "start": "cd Server && npm start"
   },
   "keywords": [],
   "author": "Your Name",

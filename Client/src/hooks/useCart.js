@@ -1,4 +1,3 @@
-// useCart.js
 import React, { useState, useEffect } from 'react';
 
 export const useCart = () => {
@@ -9,10 +8,11 @@ export const useCart = () => {
   const [productsData, setProductsData] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const [cartItemIds, setCartItemIds] = useState([]);
-  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+  
   const fetchCart = async () => {
     try {
-      const response = await fetch(`/api/cart?userId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/cart?userId=${userId}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

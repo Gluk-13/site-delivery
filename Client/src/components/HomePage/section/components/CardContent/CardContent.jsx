@@ -10,7 +10,7 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
     const { addToCart, isLoading, isError, clearError } = useAddToCart()
     const [isAdded, setIsAdded] = useState(false)
     const [quantity, setQuantity] = useState(1)
-    const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+    const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
     const percentFloor = Math.floor(discountPercent)
     const {
         cartData,

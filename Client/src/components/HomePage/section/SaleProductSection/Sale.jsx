@@ -16,7 +16,7 @@ function Sale () {
   const location = useLocation()
 
   const isFullSection = location.pathname === '/sale'
-  const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
   const fetchDiscountedProducts = async () => { // Функция для API запроса на сервер
     try {
