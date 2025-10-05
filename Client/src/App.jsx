@@ -12,6 +12,7 @@ import DeliveryHistory from './components/ProfilePage/components/DeliveryHistory
 import MainPage from './components/MainPage/MainPage'
 import Sale from './components/HomePage/section/SaleProductSection/Sale'
 import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
+import { CartProvider } from './context/CartContext'
 
 function AppLayout() {
   const location = useLocation();
@@ -32,24 +33,26 @@ function AppLayout() {
 function App() {
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="login" element={<Authorization />} />
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="login" element={<Authorization />} />
 
-        <Route path="/" element={
-          <ProtectedRoute>
-            <AppLayout/>
-          </ProtectedRoute>
-        }>
-          <Route index element={<HomePage />} /> 
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="cart" element={<CartPage />} />
-          <Route path="delivery-history" element={<DeliveryHistory />} />
-          <Route path='sale' element={<Sale/>} />
-          <Route path='new-product' element={<NewProduct/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route path="/" element={
+            <ProtectedRoute>
+              <AppLayout/>
+            </ProtectedRoute>
+          }>
+            <Route index element={<HomePage />} /> 
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="delivery-history" element={<DeliveryHistory />} />
+            <Route path='sale' element={<Sale/>} />
+            <Route path='new-product' element={<NewProduct/>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   );
 }
 

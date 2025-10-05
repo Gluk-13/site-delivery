@@ -1,30 +1,27 @@
 import React from 'react'
 import styles from './CardContent.module.scss'
-import { useAddToCart } from '../../../../../hooks/useAddToCart';
 import { useState, useEffect } from 'react';
-import { useCart } from '../../../../../hooks/useCart';
-
-
+import { useCart } from '../../../../../context/CartContext';
 
 function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent }) {
-    const { addToCart, isLoading, isError, clearError } = useAddToCart()
-    const [isAdded, setIsAdded] = useState(false)
-    const [quantity, setQuantity] = useState(1)
+    const { isError, isLoading, cartData, addToCart, removeItemInCart, clearError } = useCart()
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
     const percentFloor = Math.floor(discountPercent)
-    const {
-        cartData,
-        productsData,
-        refetch,
-    } = useCart()
 
-    const handleAddToCart = async (qty = quantity) => {
-        const response = await addToCart(productId, qty)
-        if (response.success) {
-            setIsAdded(true)
-            refetch();
-        }
+    // Получаем информацию о товаре из корзины
+    const cartItem = cartData.find(item => item.productId === productId);
+    const isAdded = !!cartItem;
+    const quantity = cartItem?.quantity || 1;
+
+    const handleAddToCart = async (qty = 1) => {
+        await addToCart(productId, qty);
+        // Состояние автоматически обновится через cartData
     }
+
+    const handleRemoveFromCart = async () => {
+        await removeItemInCart(productId);
+        // Состояние автоматически обновится через cartData
+    };
 
     const handleAddedClick = () => {
         handleAddToCart(1)
@@ -32,15 +29,15 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
 
     const handleIncrement = () => {
         const newQuantity = quantity + 1
-        setQuantity(newQuantity)
         handleAddToCart(newQuantity)
     }
 
-    const handleDecrement = () => {
+    const handleDecrement = async () => {
         if(quantity > 1) {
             const newQuantity = quantity - 1
-            setQuantity(newQuantity)
             handleAddToCart(newQuantity)
+        } else {
+            await handleRemoveFromCart();
         }
     }
 
@@ -66,17 +63,6 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
         
         return stars;
     }
-
-    useEffect(() => {
-    const cartItem = cartData.find(item => item.productId === productId);
-    if (cartItem) {
-        setIsAdded(true);
-        setQuantity(cartItem.quantity || 1);
-    } else {
-        setIsAdded(false);
-        setQuantity(1);
-    }
-    }, [cartData, productId]);
 
   return (
     <div className={styles.card}>
@@ -129,6 +115,7 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
             {!isAdded ? (
                 <button className={styles.card__cart_btn}
                 onClick={handleAddedClick}
+                disabled={isLoading}
                 >
                     { isLoading ? 'Добавление...' : 'В корзину'}
                 </button>) : (
@@ -148,13 +135,14 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
                         <button 
                         className={styles.card__added_btn}
                         onClick={handleIncrement}
+                        disabled={isLoading}
                         >
                             +
                         </button>
                         <button 
                         className={styles.card__added_btn}
                         onClick={handleDecrement}
-                        disabled={quantity <= 1}
+                        disabled={isLoading}
                         >
                             -
                         </button>

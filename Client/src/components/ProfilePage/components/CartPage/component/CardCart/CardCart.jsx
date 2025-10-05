@@ -1,63 +1,90 @@
 import React, { useState } from 'react'
-import { useAddToCart } from '../../../../../../hooks/useAddToCart';
 import styles from './CardCart.module.scss'
+import {useCart} from '../../../../../../context/CartContext'
 
-function CardCart( { productQuantity, product, onUpdate, selectedItem } ) {
+function CardCart({
+    productQuantity,
+    product,
+    isSelected = false,
+    onSelectChange,
+    }) {
+
+    const { 
+        addToCart, 
+        removeItemInCart, 
+        isLoading, 
+    } = useCart();
+
     const { id, name, price, discount_percent, discount_price, imageUrl } = product
-    const { addToCart, isLoading, isError, clearError } = useAddToCart()
-    const [quantity, setQuantity] = useState(productQuantity || 1)
-    const [isFinallyPrice, setIsFinallyPrice] = useState (price * (productQuantity || 1))
     const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
-    const baseUrl = API_BASE_URL+imageUrl
-    const [isAdded, setIsAdded] = useState(false)
     const [imageError, setImageError] = useState(false);
 
+    const getImageUrl = () => {
+        if (imageError) {
+            return '/placeholder-image.jpg';
+        }
+        if (!imageUrl) {
+            console.warn('Image URL is undefined for product:', id);
+            return '/placeholder-image.jpg';
+        }
+        const formattedImageUrl = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+        return `${API_BASE_URL}${formattedImageUrl}`;
+    }
 
+    const handleAddToCart = async (qty = productQuantity) => {
+        await addToCart(id, qty)
+    }
 
-    const hundleAddToCart = async (qty = quantity) => {
-        const response = await addToCart(id, qty)
-        if (response.success) {
-            setIsAdded(true)
-            onUpdate
+    const handleRemoveFromCart = async () => {
+        await removeItemInCart(id);
+    }
+
+    const handleIncrement = () => {
+        const newQuantity = productQuantity + 1
+        handleAddToCart(newQuantity)
+    }
+
+    const handleDecrement = async () => {
+        if (productQuantity > 1) {
+            const newQuantity = productQuantity - 1
+            await handleAddToCart(newQuantity)
+        } else if (productQuantity === 1) {
+            await handleRemoveFromCart()
+        } else {
+            console.log('Неожиданное количество:', productQuantity);
         }
     }
 
-    const hundleIncrement = () => {
-        const newQuantity = quantity + 1
-        setQuantity(newQuantity)
-        hundleAddToCart(newQuantity)
-        setIsFinallyPrice(newQuantity * price)
+    const handleCheckboxChange = (e) => {
+        onSelectChange && onSelectChange(e.target.checked)
     }
 
-    const hundleDecrement = () => {
-        if (quantity > 1) {
-            const newQuantity = quantity - 1
-            setQuantity(newQuantity)
-            hundleAddToCart(newQuantity)
-            setIsFinallyPrice(newQuantity * price)
-        }
-    }
+    const currentPrice = discount_price || price;
+    const totalPrice = currentPrice * (productQuantity || 1);
 
-  return (
+  return ( 
     <div className={styles.card}>
         <div className={styles.card__container_img}>
             <img className={styles.card__img} 
-            src={`${baseUrl}`} 
-            alt="Картинка товара"
+            src={getImageUrl()} 
+            alt=""
             onError={() => setImageError(true)} 
             />
-            {imageError && <div className={styles.card__placeholder}>Ошибка загрузки</div>}
             <label className={styles.card__checkbox}>
                 <input 
                     id={`checkbox-${id}`} 
                     type="checkbox"
-                    onClick={selectedItem}
+                    checked={isSelected}
+                    onChange={handleCheckboxChange}
+                    className={styles.card__input_filter}
                 />
+                <span className={styles.card__checkbox_checkmark}></span>
             </label>
+            {imageError && <div className={styles.card__placeholder}>Ошибка загрузки</div>}
         </div>
         <div className={styles.card__container_info}>
             <h3 className={styles.card__info_title}>{name}</h3>
-            {discount_price ? (
+            {!discount_price ? (
             <p className={styles.card__info_descr}>
                 {price}₽
             </p>
@@ -90,16 +117,16 @@ function CardCart( { productQuantity, product, onUpdate, selectedItem } ) {
             <div className={styles.card__container_btn}>
                 <div className={styles.card__btn_container}>
                     <button className={styles.card__quantity_btn}
-                    onClick={hundleDecrement}
-                    disabled={quantity === 1}
+                    onClick={handleDecrement}
+                    disabled={isLoading}
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M4.5 12C4.5 11.7239 4.72386 11.5 5 11.5H19C19.2761 11.5 19.5 11.7239 19.5 12C19.5 12.2761 19.2761 12.5 19 12.5H5C4.72386 12.5 4.5 12.2761 4.5 12Z" fill="white"/>
                         </svg>
                     </button>
-                    <p className={styles.card__quantity_descr}>{quantity}</p>
+                    <p className={styles.card__quantity_descr}>{productQuantity || 1}</p>
                     <button className={styles.card__quantity_btn}
-                    onClick={hundleIncrement}
+                    onClick={handleIncrement}
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M12 4.5C12.2761 4.5 12.5 4.72386 12.5 5V19C12.5 19.2761 12.2761 19.5 12 19.5C11.7239 19.5 11.5 19.2761 11.5 19V5C11.5 4.72386 11.7239 4.5 12 4.5Z" fill="white"/>
@@ -110,7 +137,7 @@ function CardCart( { productQuantity, product, onUpdate, selectedItem } ) {
             </div>
             <div className={styles.card__container_price}>
                 <p className={styles.card__quantity_price}>
-                    {isFinallyPrice}₽
+                    {totalPrice}₽
                 </p>
             </div>
         </div>

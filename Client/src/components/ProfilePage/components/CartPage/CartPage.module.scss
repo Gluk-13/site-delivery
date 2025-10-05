@@ -40,7 +40,7 @@
         justify-content: space-between;
         width: 100%;
         height: calc(var(--size-base)*117.5);
-        padding-top: calc(var(--size-base)*15);
+        margin-top: calc(var(--size-base)*15);
         column-gap: calc(var(--size-base)*10);
     }
 
@@ -48,14 +48,17 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         width: calc(var(--size-base)*224);
         height: calc(var(--size-base)*108.5);
     }
 
     &__filter_container {
         display: flex;
+        justify-content: space-between;
         width: calc(var(--size-base)*76);
         height: calc(var(--size-base)*8);
+        margin-bottom: calc(var(--size-base)*10);
     }
 
     &__filter {
@@ -79,11 +82,92 @@
         color: var(--primary-color);
     }
 
+    &__checkbox {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        
+        input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        &_checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        input:checked + &_checkmark {
+            background-color: var(--border-green);
+            border-color: var(--border-green);
+        }
+
+        input:checked + &_checkmark::after {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        &:hover &_checkmark {
+            border-color:  var(--font-dark);
+        }
+    }
+
     &__list {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
         display: flex;
         flex-direction: column;
-        width: calc(var(--size-base)*250);
-        height: calc(var(--size-base)*94.5);
-        row-gap: calc(var(--size-base)*6);
+        gap: calc(var(--size-base)*6);
+        max-height: 100%;
+        min-height: 200px;
+
+        &::-webkit-scrollbar {
+            width: 10px; 
+            height: 8px;
+            
+        }
+
+        &::-webkit-scrollbar-track {
+            background: var(--font-white); // Цвет трека
+            border-radius: 4px; // Закругление трека
+            margin: 4px 0; // Отступы сверху и снизу
+            
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+            
+            
+            
+            &:hover {
+            background: #a8a8a8;
+            background-clip: content-box;
+            }
+            
+            &:active {
+            background: #888888;
+            background-clip: content-box;
+            }
+        }
     }
 }

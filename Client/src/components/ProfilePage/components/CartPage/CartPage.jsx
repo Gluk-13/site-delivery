@@ -4,20 +4,17 @@ import FormPayment from './component/FormPayment/FormPayment'
 import styles from './CartPage.module.scss'
 import NavComponentSection from '../../../HomePage/section/components/Nav/NavComponentSection'
 import CardCart from './component/CardCart/CardCart'
-import { useCart } from '../../../../hooks/useCart';
+import { useCart } from '../../../../context/CartContext';
 
 function CartPage() {
-  const userId = localStorage.getItem('userId')
-  const token = localStorage.getItem('authToken')
-  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const {
     isLoading,
+    isRemoving,
     cartData,
     productsData,
     isEmpty,
-    cartItemIds,
-    fetchCart,
     refetch,
+    removeItemInCart,
   } = useCart();
 
   const [selectedItems, setSelectedItems] = useState([])
@@ -27,44 +24,123 @@ function CartPage() {
       return []
     }
 
-    return cartData.map(cartItem => {
+    const items = cartData.map(cartItem => {
       const product = productsData.find(p => p.id === cartItem.productId)
       return {
         ...cartItem,
         product: product || null
       }
     }).filter(item => item.product !== null)
+    return items;
   }, [cartData, productsData])
 
   const handleSelectAll = () => {
-    const allIds = getCartItems.map(item => item.id)
-    setSelectedItems(allIds)
+    if (selectedItems.length === getCartItems.length) {
+      setSelectedItems([])
+    } else {
+      const allIds = getCartItems.map(item => item.productId)
+      setSelectedItems(allIds)
+    }
   }
 
   const handleDeleteSelected = async () => {
+    if (selectedItems.length === 0) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/items/:productId`,{
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId: selectedItems })
-      })
+      const deletePromises = selectedItems.map(productId => 
+        removeItemInCart(productId)
+      )
+      await Promise.all(deletePromises)
 
-      if (!response.ok) {
-        throw new Error('Ошибка при удалении на сервере')
-      }
-
-      
-      await refetch();
       setSelectedItems([])
 
     } catch(error) {
       console.error('Ошибка при удалении товаров', error)
     }
   }
+
+  const handleItemSelect = (productId, isSelected) => {
+    if (isSelected) {
+      setSelectedItems(prev => [...prev, productId])
+    } else {
+      setSelectedItems(prev => prev.filter(id => id !== productId))
+    }
+  }
+
+  useEffect(() => {
+    const currentProductIds = getCartItems.map(item => item.productId);
+    setSelectedItems(prev => prev.filter(id => currentProductIds.includes(id)));
+  }, [getCartItems]);
+
+  //Рассчеты данных под заполнение форм
+  const useCartCalculations = () => {
+    const getItemsToCalculate = () => {
+      if (!getCartItems || !Array.isArray(getCartItems)){
+        return [];
+      }
+
+      return selectedItems.length > 0 
+      ? getCartItems.filter(item => selectedItems.includes(item.productId))
+      : getCartItems
+    }
+
+    const calcTotalQuantity = () => {
+      const items = getItemsToCalculate();
+      let total = 0;
+      for (const item of items) {
+        total += item.quantity
+      }
+      return total
+    }
+
+    const calcTotalPrice = () => {
+      const items = getItemsToCalculate();
+      let total = 0;
+      for (const item of items) {
+        const price = item.product?.discount_price || item.product?.price || 0
+        total += price * item.quantity
+      }
+      return total
+    }
+
+    const calcOriginPrice = () => {
+      const items = getItemsToCalculate();
+      let total = 0;
+      for (const item of items) {
+        const price = item.product?.price || 0
+        total += price * item.quantity
+      }
+      return total
+    }
+
+    const calcTotalDiscounted = () => {
+      const original = calcOriginPrice();
+      const withDiscount = calcTotalPrice();
+      return Math.max(0, original - withDiscount);
+    }
+
+    const getAllCalculations = () => {
+      return {
+        totalQuantity: calcTotalQuantity(),
+        totalPrice: calcTotalPrice(),
+        originalPrice: calcOriginPrice(),
+        totalDiscount: calcTotalDiscounted(),
+        itemsCount: getItemsToCalculate().length,
+        hasSelectedItems: selectedItems.length > 0
+      };
+    };
+
+    return {
+      calcTotalQuantity,
+      calcTotalPrice,
+      calcOriginPrice,
+      calcTotalDiscounted,
+      getAllCalculations
+    };
+  }
+
+  const cartCalculations = useCartCalculations();
+  const cartDataForForm = cartCalculations.getAllCalculations();
 
   return (
     <section className={styles.cart}>
@@ -78,22 +154,25 @@ function CartPage() {
             Корзина
           </h1>
           <div className={styles.cart__quantity_container}>
-            <p className={styles.cart__quantity}>{getCartItems.length}</p>
+            <p className={styles.cart__quantity}>{cartDataForForm.totalQuantity}</p>
           </div>
         </div>
         <div className={styles.cart__container_cart}>
           <div className={styles.cart__container_list}>
             <div className={styles.cart__filter_container}>
-              <div className={styles.cart__filter}>
+              <label className={styles.cart__checkbox}>
                 <input 
-                  onChange={() => handleSelectAll()}
+                  onChange={handleSelectAll}
                   type="checkbox"
-                  checked={selectedItems.length === getCartItems.length}
+                  checked={getCartItems.length > 0 && selectedItems.length === getCartItems.length}
                   className={styles.cart__input_filter}
                 />
-                <p className={styles.cart__descr_filter}>Выделить всё</p>
-              </div>
-              <button disabled={selectedItems>=0} onClick={handleDeleteSelected} className={styles.cart__delete_link}>Удалить выбранные</button>
+                
+                <span className={styles.cart__checkbox_checkmark}></span>
+                Выделить всё
+              </label>
+              <button disabled={selectedItems.length === 0 || isRemoving} 
+              onClick={handleDeleteSelected} className={styles.cart__delete_link}>Удалить выбранные</button>
             </div>
             <div className={styles.cart__list}>
               {isLoading ? (
@@ -106,17 +185,21 @@ function CartPage() {
                     key={item.id || item.productId}
                     product={item.product}
                     productQuantity={item.quantity}
-                    cartItemId={item.id}
-                    price={item.price}
-                    imageUrl={item.image_url}
-                    onUpdate={fetchCart}
-                    selectedItem={selectedItems}
+                    isSelected={selectedItems.includes(item.productId)}
+                    onSelectChange={(isSelected) => handleItemSelect(item.productId, isSelected)}
                   />
                 ))
               )}
             </div>
           </div>
-          <FormPayment items={getCartItems} />
+          <FormPayment 
+            totalQuantityProduct={cartDataForForm.totalQuantity}
+            totalPrice={cartDataForForm.totalPrice}
+            originalPrice={cartDataForForm.originalPrice}
+            totalDiscount={cartDataForForm.totalDiscount}
+            itemsCount={cartDataForForm.itemsCount}
+            hasSelectedItems={cartDataForForm.hasSelectedItems}
+          />
         </div>
       </div>
     </section>
