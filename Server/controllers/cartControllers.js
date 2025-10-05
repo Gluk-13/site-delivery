@@ -33,7 +33,7 @@ class CartController {
     async removeItem(req, res, next) {
         try {
             const userId = req.userId
-            const { productId } = req.body
+            const productId  = req.params.productId
             const updatedCart = await cartService.removeItem(userId, productId)
             res.json(updatedCart)
         } catch (error) {
