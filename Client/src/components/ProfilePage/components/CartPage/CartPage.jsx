@@ -8,7 +8,7 @@ import { useCart } from '../../../../context/CartContext';
 
 function CartPage() {
   const {
-    isLoading,
+    isCartLoading,
     isRemoving,
     cartData,
     productsData,
@@ -18,7 +18,7 @@ function CartPage() {
   } = useCart();
 
   const [selectedItems, setSelectedItems] = useState([])
-
+  
   const getCartItems = useMemo(() => {
     if (cartData.length === 0 || productsData.length === 0) {
       return []
@@ -175,7 +175,7 @@ function CartPage() {
               onClick={handleDeleteSelected} className={styles.cart__delete_link}>Удалить выбранные</button>
             </div>
             <div className={styles.cart__list}>
-              {isLoading ? (
+              {isCartLoading ? (
                 <p>Загрузка...</p>
               ) : isEmpty ? (
                 <p>Корзина пустая</p>

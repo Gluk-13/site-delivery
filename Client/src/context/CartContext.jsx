@@ -7,17 +7,18 @@ const CartContext = createContext();
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'SET_LOADING':
-      return { ...state, isLoading: action.payload };
+      return { ...state, isCartLoading: action.payload };
     case 'SET_CART_DATA':
       return { 
         ...state, 
         cartData: action.payload.cartData,
         productsData: action.payload.productsData || state.productsData,
         isEmpty: action.payload.cartData.length === 0,
+        isCartLoading: false,
         loadingItems: {}
       };
     case 'SET_ERROR':
-      return { ...state, isLoading: false, isError: action.payload };
+      return { ...state, isCartLoading: false, isError: action.payload };
     case 'CLEAR_ERROR':
       return { ...state, isError: null };
     default:
@@ -40,6 +41,7 @@ export const CartProvider = ({ children }) => {
 
   const fetchCart = async () => {
     try {
+      dispatch({ type: 'SET_LOADING', payload: true });
       const token = localStorage.getItem('authToken');
       const response = await fetch(`${API_BASE_URL}/cart`, {
         method: 'GET',
