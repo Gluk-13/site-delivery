@@ -14,7 +14,7 @@ const cartReducer = (state, action) => {
         cartData: action.payload.cartData,
         productsData: action.payload.productsData || state.productsData,
         isEmpty: action.payload.cartData.length === 0,
-        isLoading: false
+        loadingItems: {}
       };
     case 'SET_ERROR':
       return { ...state, isLoading: false, isError: action.payload };
@@ -28,7 +28,7 @@ const cartReducer = (state, action) => {
 const initialState = {
   cartData: [],
   productsData: [],
-  isLoading: false,
+  loadingItems: {},
   isCartLoading: true,
   isError: null,
   isEmpty: false,
@@ -135,6 +135,7 @@ export const CartProvider = ({ children }) => {
     removeItemInCart,
     refetch: fetchCart,
     clearError,
+    isLoading: (productId) => state.loadingItems[productId] || false,
   };
 
   return (

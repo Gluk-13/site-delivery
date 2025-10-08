@@ -14,6 +14,8 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
     const quantity = cartItem?.quantity || 1;
 
     const isProductInFavorites = isInFavorites(productId);
+
+    const isThisProductLoading = isLoading(productId);
     
     const handleAddToCart = async (qty = 1) => {
         await addToCart(productId, qty);
@@ -140,9 +142,9 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
             {!isAdded ? (
                 <button className={styles.card__cart_btn}
                 onClick={handleAddedClick}
-                disabled={isLoading}
+                disabled={isThisProductLoading}
                 >
-                    { isLoading ? 'Добавление...' : 'В корзину'}
+                    { isThisProductLoading ? 'Добавление...' : 'В корзину'}
                 </button>) : (
                 <div className={styles.card__added_container}>
                     { isError && (
@@ -160,14 +162,14 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
                         <button 
                         className={styles.card__added_btn}
                         onClick={handleIncrement}
-                        disabled={isLoading}
+                        disabled={isThisProductLoading}
                         >
                             +
                         </button>
                         <button 
                         className={styles.card__added_btn}
                         onClick={handleDecrement}
-                        disabled={isLoading}
+                        disabled={isThisProductLoading}
                         >
                             -
                         </button>
