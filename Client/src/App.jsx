@@ -13,6 +13,8 @@ import MainPage from './components/MainPage/MainPage'
 import Sale from './components/HomePage/section/SaleProductSection/Sale'
 import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
 import { CartProvider } from './context/CartContext'
+import { FavoritesProvider } from './context/FavoritesContext'
+import FavoritePage from './components/Favorite/FavoritePage'
 
 function AppLayout() {
   const location = useLocation();
@@ -34,24 +36,27 @@ function App() {
 
   return (
     <CartProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="login" element={<Authorization />} />
+      <FavoritesProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="login" element={<Authorization />} />
 
-          <Route path="/" element={
-            <ProtectedRoute>
-              <AppLayout/>
-            </ProtectedRoute>
-          }>
-            <Route index element={<HomePage />} /> 
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="delivery-history" element={<DeliveryHistory />} />
-            <Route path='sale' element={<Sale/>} />
-            <Route path='new-product' element={<NewProduct/>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <AppLayout/>
+              </ProtectedRoute>
+            }>
+              <Route index element={<HomePage />} /> 
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="cart" element={<CartPage />} />
+              <Route path="delivery-history" element={<DeliveryHistory />} />
+              <Route path='sale' element={<Sale/>} />
+              <Route path='new-product' element={<NewProduct/>} />
+              <Route path='favorite' element={<FavoritePage/>} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </FavoritesProvider>
     </CartProvider>
   );
 }

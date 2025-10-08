@@ -8,7 +8,7 @@ import authRoutes from './routes/auth/login.js'; //Все три роута дл
 import registerRoutes from './routes/auth/register.js'//2
 import resetRoutes from './routes/auth/reset.js'//3
 import cartRoutes from './routes/cart/cartRoutes.js'
-import favourRoutes from './routes/favour/favourRoutes.js'
+import favorRoutes from './routes/favour/favorRoutes.js'
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -29,7 +29,7 @@ app.use('/api/users', authRoutes);
 app.use('/api/users', registerRoutes);
 app.use('/api/users', resetRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/favourites', favourRoutes);
+app.use('/api/favorites', favorRoutes);
 
 //Просто тестовый роут чтобы знать что сервер не лёг
 app.get('/api/test', (req, res) => {

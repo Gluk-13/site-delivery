@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
       const productsResponse = await fetch(`${API_BASE_URL}/products/bulk`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ ids: productIds }),
@@ -144,7 +144,6 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-// Кастомный хук для использования контекста
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {

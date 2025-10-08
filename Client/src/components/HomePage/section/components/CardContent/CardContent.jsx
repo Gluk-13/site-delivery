@@ -1,26 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './CardContent.module.scss'
-import { useState, useEffect } from 'react';
 import { useCart } from '../../../../../context/CartContext';
+import { useFavorites } from '../../../../../context/FavoritesContext';
 
-function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent }) {
+function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent, onRemoveFromFavorites, onAddToFavorites }) {
     const { isError, isLoading, cartData, addToCart, removeItemInCart, clearError } = useCart()
+    const { favorites, loading: favoritesLoading, addToFavorites, removeFromFavorites, isInFavorites } = useFavorites()
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
     const percentFloor = Math.floor(discountPercent)
 
-    // Получаем информацию о товаре из корзины
     const cartItem = cartData.find(item => item.productId === productId);
     const isAdded = !!cartItem;
     const quantity = cartItem?.quantity || 1;
 
+    const isProductInFavorites = isInFavorites(productId);
+    
     const handleAddToCart = async (qty = 1) => {
         await addToCart(productId, qty);
-        // Состояние автоматически обновится через cartData
     }
 
     const handleRemoveFromCart = async () => {
         await removeItemInCart(productId);
-        // Состояние автоматически обновится через cartData
     };
 
     const handleAddedClick = () => {
@@ -39,6 +39,20 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
         } else {
             await handleRemoveFromCart();
         }
+    }
+
+    const handleAddAndRemoveToFavorites = async () => {
+        if (isProductInFavorites) {
+            await removeFromFavorites(productId);
+            if (onRemoveFromFavorites) {
+                onRemoveFromFavorites(productId);
+            }
+       } else {
+            await addToFavorites(productId);
+            if (onAddToFavorites) {
+                onAddToFavorites(productId);
+            }
+       }
     }
 
     function CalcStars (rating) {
@@ -76,18 +90,29 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
         }}
         >
             <div className={styles.card__svg_favorite}>
-                <div className={styles.card__container_svg}>
-                    <svg className={styles.svg__favorite} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M12.7046 4.25644C13.8299 3.13067 15.3564 2.49817 16.9482 2.49817C18.5399 2.49817 
-                        20.0664 3.13063 21.1916 4.25636C22.3174 5.38164 22.95 6.90829 22.95 8.49999C22.95 10.0917 22.3175 11.6183 21.1917 12.7435C21.1917 12.7436 
-                        21.1917 12.7435 21.1917 12.7435L12.3517 21.5835C12.1565 21.7788 11.8399 21.7788 11.6446 21.5835L2.80461 12.7435C0.460963 10.3999 0.460963 
-                        6.60009 2.80461 4.25644C5.14826 1.91279 8.94807 1.91279 11.2917 4.25644L11.9982 4.96289L12.7046 4.25644C12.7046 4.25641 12.7046 4.25647 12.7046 4.25644ZM16.9482 
-                        3.49817C15.6217 3.49817 14.3496 4.02528 13.4118 4.96346L12.3517 6.02355C12.258 6.11732 12.1308 6.16999 11.9982 6.16999C11.8656 6.16999 11.7384 
-                        6.11732 11.6446 6.02355L10.5846 4.96355C8.63149 3.01042 5.46484 3.01042 3.51172 4.96355C1.55859 6.91667 1.55859 10.0833 3.51172 12.0364L11.9982 
-                        20.5229L20.4846 12.0364C21.4228 11.0987 21.95 9.82648 21.95 8.49999C21.95 7.17351 21.4229 5.90138 20.4847 4.96363C19.5469 4.02544 18.2747 3.49817 
-                        16.9482 3.49817Z" fill="#414141"/>
-                    </svg>
-                </div>
+                <button 
+                className={styles.card__container_svg}
+                onClick={handleAddAndRemoveToFavorites}
+                disabled={favoritesLoading}
+                >
+                    {isProductInFavorites ? (
+                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path 
+                                d="M11 19.5L9.55 18.15C4.4 13.65 1 10.725 1 7.125C1 4.125 3.3 1.75 6.25 1.75C7.975 1.75 9.625 2.55 10.75 3.8C11.875 2.55 13.525 1.75 15.25 1.75C18.2 1.75 20.5 4.125 20.5 7.125C20.5 10.725 17.1 13.65 11.95 18.15L11 19.5Z" 
+                                fill="#FF6633"
+                            />
+                        </svg>
+                    ) : (
+                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path 
+                                d="M11 19.5L9.55 18.15C4.4 13.65 1 10.725 1 7.125C1 4.125 3.3 1.75 6.25 1.75C7.975 1.75 9.625 2.55 10.75 3.8C11.875 2.55 13.525 1.75 15.25 1.75C18.2 1.75 20.5 4.125 20.5 7.125C20.5 10.725 17.1 13.65 11.95 18.15L11 19.5Z" 
+                                fill="none"
+                                stroke="#BFBFBF"
+                                strokeWidth="1.5"
+                            />
+                        </svg>
+                    )}
+                </button>
                 {discountPercent && (
                 <div className={styles.card__sale_info}>
                     <p className={styles.card__sale_descr}>-{percentFloor}%</p>
