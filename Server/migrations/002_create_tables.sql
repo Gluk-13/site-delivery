@@ -51,16 +51,16 @@ CREATE TABLE orders (
     total_amount DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
 );
 
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    product_id INTEGER REFERENCES products(id),
     product_name VARCHAR(255) NOT NULL,
     product_price DECIMAL(10,2) NOT NULL,
-    quantity INTEGER NOT NULL CHECK (quantity > 0),
-    total_price DECIMAL(10,2) NOT NULL,
+    quantity INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
