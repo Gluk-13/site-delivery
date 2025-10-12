@@ -15,6 +15,7 @@ import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
 import { CartProvider } from './context/CartContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import FavoritePage from './components/Favorite/FavoritePage'
+import Orders from './components/Orders/Orders'
 
 function AppLayout() {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
               <Route path='sale' element={<Sale/>} />
               <Route path='new-product' element={<NewProduct/>} />
               <Route path='favorite' element={<FavoritePage/>} />
+              <Route path='orders' element={<Orders/>} />
             </Route>
           </Routes>
         </BrowserRouter>

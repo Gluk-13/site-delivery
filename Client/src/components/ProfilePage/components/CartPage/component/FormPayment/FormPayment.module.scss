@@ -28,6 +28,8 @@
     &__container_btn {
         display: flex;
         flex-direction: column;
+        justify-content: end;
+        align-items: center;
         width: 100%;
         height: calc(var(--size-base)*25);
     }
@@ -88,42 +90,49 @@
     }
 
     &__order_container {
-        width: calc(var(--size-base)*68);
+        width: 100%;
         height: calc(var(--size-base)*25);
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: end;
         align-items: center;
     }
 
     &__order_alert {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         color: var(--font-white);
         font-size: calc(var(--font-size)*3);
         font-weight: 400;
         font-family: 'Rubik';
-        background-color: var(--error-color);
     }
 
     &__order_border {
-        width: 80%;
+        width: 85%;
         height: calc(var(--size-base)*6);
         display: flex;
         justify-content: center;
         align-items: center;
         background-color: var(--error-color);
         border-radius: 5px;
+        margin-bottom: calc(var(--size-base)*4);
     }
 
     &__order_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         height: calc(var(--size-base)*15);
-        color: var(--primary-color);
+        color: var(--border-green);
         font-size: calc(var(--font-size)*6);
-        background-color: var(--authorization-bg);
+        background-color: var(--font-white);
+        border: 2px solid var(--border-green);
         border-radius: 10px;
+
+        &:hover {
+            background-color: var(--primary-color);
+            color: var(--font-white);
+            border: none;
+        }
     }
 }
 

@@ -4,7 +4,7 @@ import { useCart } from '../../../../../context/CartContext';
 import { useFavorites } from '../../../../../context/FavoritesContext';
 
 function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent, onRemoveFromFavorites, onAddToFavorites }) {
-    const { isError, isLoading, cartData, addToCart, removeItemInCart, clearError } = useCart()
+    const { isError, isLoading, cartData, addToCart, removeItemInCart, clearError, isInitialLoading } = useCart()
     const { favorites, loading: favoritesLoading, addToFavorites, removeFromFavorites, isInFavorites } = useFavorites()
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
     const percentFloor = Math.floor(discountPercent)
@@ -56,6 +56,10 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
             }
        }
     }
+
+    useEffect(()=>{
+        !isError
+    }, [isError])
 
     function CalcStars (rating) {
         const stars = [];
@@ -144,17 +148,9 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
                 onClick={handleAddedClick}
                 disabled={isThisProductLoading}
                 >
-                    { isThisProductLoading ? 'Добавление...' : 'В корзину'}
+                    { isThisProductLoading || isError ? 'Добавление...' : 'В корзину'}
                 </button>) : (
                 <div className={styles.card__added_container}>
-                    { isError && (
-                        <div className={styles.card__error_container}>
-                            <p className={styles.card__error_message}>
-                                {isError}
-                            </p>
-                            <button onClick={clearError}>x</button>
-                        </div>
-                    )}
                     <p className={styles.card__added_descr}>
                         Добавлено: {quantity} шт.
                     </p>

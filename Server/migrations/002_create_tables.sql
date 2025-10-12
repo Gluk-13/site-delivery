@@ -42,3 +42,28 @@ CREATE TABLE IF NOT EXISTS public.users (
     role_id integer,
     name character varying(255) DEFAULT 'Unknown'::character varying NOT NULL
 );
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL, -- ссылка на пользователя
+    order_number VARCHAR(50) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'paid', 'shipped', 'delivered', 'cancelled')),
+    total_amount DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity > 0),
+    total_price DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    INDEX idx_order_id (order_id),
+    INDEX idx_product_id (product_id)
+);

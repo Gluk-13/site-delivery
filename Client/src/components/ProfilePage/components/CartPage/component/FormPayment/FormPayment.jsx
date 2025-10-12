@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './FormPayment.module.scss'
+import { useCart } from '../../../../../../context/CartContext'
 
 function FormPayment({ 
     totalQuantityProduct = 0,
@@ -9,6 +10,14 @@ function FormPayment({
     itemsCount = 0, 
     hasSelectedItems = false,
 }) {
+
+    const { createOrder, isOrderLoading } = useCart();
+
+    const isAlert = totalPrice > 1000 ? true : false
+
+    const handleAddOrder = async () => {
+
+    }
 
     if (!hasSelectedItems) {
         return (
@@ -78,12 +87,15 @@ function FormPayment({
         </div>
         <div className={styles.form__container_btn}>
             <div className={styles.form__order_container}>
-                <div className={styles.form__order_border}>
+                {!isAlert ? (                <div className={styles.form__order_border}>
                     <p className={styles.form__order_alert}>
                         Минимальная сумма заказа 1000р
                     </p>
-                </div>
-                <button className={styles.form__order_btn}>
+                </div>) : null}
+                <button className={styles.form__order_btn}
+                onClick={handleAddOrder}
+                disabled={!isAlert}
+                >
                     Оформить заказ
                 </button>
             </div>

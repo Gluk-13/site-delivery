@@ -1,0 +1,91 @@
+.order-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    &__container_data {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: calc(var(--size-base)*10.5);
+    }
+
+    &__status_container {
+        display: flex;
+        column-gap: calc(var(--size-base)*6);
+        align-items: center;
+    }
+
+    &__title_descr {
+        display: flex;
+        align-items: center;
+        color: var(--font-black);
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*6);
+        font-weight: 700;
+    }
+
+    &__status {
+        width: calc(var(--size-base)*25);
+        height: calc(var(--size-base)*8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--font-dark);
+        font-size: calc(var(--font-size)*4);
+        font-family: 'Rubik';
+        background-color: var(--light-gray);
+        border-radius: 4px;
+    }
+
+    &__data_container {
+        width: calc(var(--size-base)*86.7);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__descr {
+        color: var(--font-black);
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*6);
+    }
+
+    &__data_btn {
+        display: flex;
+        width: calc(var(--size-base)*50);
+        height: calc(var(--size-base)*10);
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--border-green);
+        padding: calc(var(--size-base)*4);
+        border-radius: 4px;
+        color: var(--font-white);
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*4);
+        font-weight: 400;
+    }
+
+    &__list {
+        margin-bottom: calc(var(--size-base)*10);
+    }
+
+    &__btn_more {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(var(--size-base)*52);
+        height: calc(var(--size-base)*10);
+        background-color: var(--light-gray);
+        color: var(--font-black);
+        font-family: 'Rubik';
+        font-weight: 400;
+        font-size: calc(var(--font-size)*4);
+        padding: 0 calc(var(--size-base)*2);
+        margin: auto;
+        border-radius: 2px;
+
+        &:hover {
+            opacity: 0.85;
+        }
+    }
+}
