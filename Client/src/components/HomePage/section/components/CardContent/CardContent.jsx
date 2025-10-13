@@ -1,61 +1,66 @@
 import React, { useState, useEffect } from 'react'
 import styles from './CardContent.module.scss'
-import { useCart } from '../../../../../context/CartContext';
-import { useFavorites } from '../../../../../context/FavoritesContext';
+import { useCartStore } from '../../../../../stores/useCartStore.js';
+import { useFavoriteStore } from '../../../../../stores/useFavoriteStore.js';
 
-function CardContent({ productId, name, price, discountPrice, imageUrl, rating, discountPercent, onRemoveFromFavorites, onAddToFavorites }) {
-    const { isError, isLoading, cartData, addToCart, removeItemInCart, clearError, isInitialLoading } = useCart()
-    const { favorites, loading: favoritesLoading, addToFavorites, removeFromFavorites, isInFavorites } = useFavorites()
+function CardContent({ 
+        productId, 
+        name, 
+        price, 
+        discountPrice, 
+        imageUrl, 
+        rating,
+    }) {
+
+    const { 
+        getCartItem, 
+        addToCart, 
+        removeItemInCart,
+        isError,
+        isLoading
+    } = useCartStore()
+
+    const {  
+        isFavoritesLoading,
+        addToFavorites, 
+        removeFromFavorites, 
+        isInFavorites
+    } = useFavoriteStore()
+
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-    const percentFloor = Math.floor(discountPercent)
 
-    const cartItem = cartData.find(item => item.productId === productId);
+    const cartItem = getCartItem(productId)
     const isAdded = !!cartItem;
-    const quantity = cartItem?.quantity || 1;
+    const quantity = cartItem?.quantity || 0
+    const isFavorite = isInFavorites(productId)
+    const discountPercent = Math.round(((price - discountPrice) / price) * 100)
 
-    const isProductInFavorites = isInFavorites(productId);
-
-    const isThisProductLoading = isLoading(productId);
-    
-    const handleAddToCart = async (qty = 1) => {
-        await addToCart(productId, qty);
-    }
-
-    const handleRemoveFromCart = async () => {
-        await removeItemInCart(productId);
+    const handleCartAction = () => {
+        if (isAdded) {
+        removeItemInCart(productId);
+        } else {
+        addToCart(productId, 1);
+        }
     };
 
-    const handleAddedClick = () => {
-        handleAddToCart(1)
-    }
-
-    const handleIncrement = () => {
-        const newQuantity = quantity + 1
-        handleAddToCart(newQuantity)
-    }
-
-    const handleDecrement = async () => {
-        if(quantity > 1) {
-            const newQuantity = quantity - 1
-            handleAddToCart(newQuantity)
+    const handleFavoriteAction = () => {
+        if (isFavorite) {
+        removeFromFavorites(productId);
         } else {
-            await handleRemoveFromCart();
+        addToFavorites(productId);
         }
-    }
+    };
 
-    const handleAddAndRemoveToFavorites = async () => {
-        if (isProductInFavorites) {
-            await removeFromFavorites(productId);
-            if (onRemoveFromFavorites) {
-                onRemoveFromFavorites(productId);
-            }
-       } else {
-            await addToFavorites(productId);
-            if (onAddToFavorites) {
-                onAddToFavorites(productId);
-            }
-       }
-    }
+    const handleQuantityChange = (change) => {
+        const newQuantity = quantity + change;
+        if (newQuantity > 0) {
+        addToCart(productId, newQuantity);
+        } else {
+        removeItemInCart(productId);
+        }
+    };
+
+    const isThisProductLoading = isLoading === true || isFavoritesLoading === true;
 
     useEffect(()=>{
         !isError
@@ -96,34 +101,24 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
         }}
         >
             <div className={styles.card__svg_favorite}>
-                <button 
+            <button 
                 className={styles.card__container_svg}
-                onClick={handleAddAndRemoveToFavorites}
-                disabled={favoritesLoading}
-                >
-                    {isProductInFavorites ? (
-                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path 
-                                d="M11 19.5L9.55 18.15C4.4 13.65 1 10.725 1 7.125C1 4.125 3.3 1.75 6.25 1.75C7.975 1.75 9.625 2.55 10.75 3.8C11.875 2.55 13.525 1.75 15.25 1.75C18.2 1.75 20.5 4.125 20.5 7.125C20.5 10.725 17.1 13.65 11.95 18.15L11 19.5Z" 
-                                fill="#FF6633"
-                            />
-                        </svg>
-                    ) : (
-                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path 
-                                d="M11 19.5L9.55 18.15C4.4 13.65 1 10.725 1 7.125C1 4.125 3.3 1.75 6.25 1.75C7.975 1.75 9.625 2.55 10.75 3.8C11.875 2.55 13.525 1.75 15.25 1.75C18.2 1.75 20.5 4.125 20.5 7.125C20.5 10.725 17.1 13.65 11.95 18.15L11 19.5Z" 
-                                fill="none"
-                                stroke="#BFBFBF"
-                                strokeWidth="1.5"
-                            />
-                        </svg>
-                    )}
-                </button>
-                {discountPercent && (
+                onClick={handleFavoriteAction}
+            >
+                <svg width="22" height="20" viewBox="0 0 22 20" fill="none">
+                <path 
+                    d="M11 19.5L9.55 18.15C4.4 13.65 1 10.725 1 7.125C1 4.125 3.3 1.75 6.25 1.75C7.975 1.75 9.625 2.55 10.75 3.8C11.875 2.55 13.525 1.75 15.25 1.75C18.2 1.75 20.5 4.125 20.5 7.125C20.5 10.725 17.1 13.65 11.95 18.15L11 19.5Z" 
+                    fill={isFavorite ? "#FF6633" : "none"}
+                    stroke={isFavorite ? "#FF6633" : "#BFBFBF"}
+                    strokeWidth="1.5"
+                />
+                </svg>
+            </button>
+                {discountPercent > 0 && (
                 <div className={styles.card__sale_info}>
-                    <p className={styles.card__sale_descr}>-{percentFloor}%</p>
-                </div>)
-                }
+                    <p className={styles.card__sale_descr}>-{discountPercent}%</p>
+                </div>
+                )}
             </div>
         </div>
         <div className={styles.card__container_content}>
@@ -145,7 +140,7 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
             </div>
             {!isAdded ? (
                 <button className={styles.card__cart_btn}
-                onClick={handleAddedClick}
+                onClick={() => handleQuantityChange(1)}
                 disabled={isThisProductLoading}
                 >
                     { isThisProductLoading || isError ? 'Добавление...' : 'В корзину'}
@@ -157,14 +152,14 @@ function CardContent({ productId, name, price, discountPrice, imageUrl, rating, 
                     <div className={styles.card__container_btn}>
                         <button 
                         className={styles.card__added_btn}
-                        onClick={handleIncrement}
+                        onClick={() => handleQuantityChange(1)}
                         disabled={isThisProductLoading}
                         >
                             +
                         </button>
                         <button 
                         className={styles.card__added_btn}
-                        onClick={handleDecrement}
+                        onClick={() => handleQuantityChange(-1)}
                         disabled={isThisProductLoading}
                         >
                             -

@@ -7,13 +7,11 @@ import Footer from './components/Footer/Footer'
 import Authorization from './components/Authorization/Authorization'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import ProfilePage from './components/ProfilePage/ProfilePage'
-import CartPage from './components/ProfilePage/components/CartPage/CartPage'
+import CartPage from './components/CartPage/CartPage'
 import DeliveryHistory from './components/ProfilePage/components/DeliveryHistory/DeliveryHistory'
 import MainPage from './components/MainPage/MainPage'
 import Sale from './components/HomePage/section/SaleProductSection/Sale'
 import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
-import { CartProvider } from './context/CartContext'
-import { FavoritesProvider } from './context/FavoritesContext'
 import FavoritePage from './components/Favorite/FavoritePage'
 import Orders from './components/Orders/Orders'
 
@@ -36,8 +34,6 @@ function AppLayout() {
 function App() {
 
   return (
-    <CartProvider>
-      <FavoritesProvider>
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<Authorization />} />
@@ -58,8 +54,6 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
-      </FavoritesProvider>
-    </CartProvider>
   );
 }
 

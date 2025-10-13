@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './FormPayment.module.scss'
-import { useCart } from '../../../../../../context/CartContext'
+import { useCartStore } from '../../../../stores/useCartStore.js'
 
 function FormPayment({ 
     totalQuantityProduct = 0,
@@ -11,7 +11,7 @@ function FormPayment({
     hasSelectedItems = false,
 }) {
 
-    const { createOrder, isOrderLoading } = useCart();
+    const { createOrder, isOrderLoading } = useCartStore();
 
     const isAlert = totalPrice > 1000 ? true : false
 

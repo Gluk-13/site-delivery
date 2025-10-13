@@ -8,7 +8,7 @@ router.get('/:userId', async (req, res) => {
     try {
         const dbResult = await pool.query('SELECT * FROM orders WHERE user_id = $1',[userId])
  
-        if (!dbResult.rows[0]) {
+        if (dbResult.rows.length === 0) {
             return res.status(401).json({
                 success: false,
                 message: 'Заказы этого пользователя не найдены' 
@@ -28,7 +28,7 @@ router.get('/:userId', async (req, res) => {
     } 
 })
 
-router.post('/add/:userId', async (req, res) => {
+router.post('/create/:userId', async (req, res) => {
     const userId = req.params.userId
     const {totalPrice, orderNumber, items} = req.body
     let orderId;
@@ -78,8 +78,8 @@ router.post('/add/:userId', async (req, res) => {
     }
 })
 
-router.patch('/status/:userId', async (req, res) => {
-    const userId = req.params.userId
+router.patch('/status/:orderId', async (req, res) => {
+    const orderId = req.params.orderId
     const status = req.body.status
     try {
 
@@ -90,10 +90,10 @@ router.patch('/status/:userId', async (req, res) => {
             })
         }
 
-        const dbResult = await pool.query('UPDATE orders SET status = $1 WHERE user_id = $2 RETURNING *',[status, userId])
+        const dbResult = await pool.query('UPDATE orders SET status = $1 WHERE id = $2 RETURNING *',[status, orderId])
 
         if (dbResult.rowCount === 0) {
-            return res.status(401).json({
+            return res.status(404).json({
                 success: false,
                 message: 'Ошибка в изменении статуса заказа'
             })

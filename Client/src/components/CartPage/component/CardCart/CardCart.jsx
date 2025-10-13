@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './CardCart.module.scss'
-import {useCart} from '../../../../../../context/CartContext'
+import { useCartStore } from '../../../../stores/useCartStore.js'
 
 function CardCart({
     productQuantity,
@@ -13,7 +13,7 @@ function CardCart({
         addToCart, 
         removeItemInCart, 
         isLoading, 
-    } = useCart();
+    } = useCartStore();
 
     const { id, name, price, discount_percent, discount_price, imageUrl } = product
     const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';

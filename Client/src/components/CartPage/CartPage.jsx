@@ -2,9 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import FormPayment from './component/FormPayment/FormPayment'
 import styles from './CartPage.module.scss'
-import NavComponentSection from '../../../HomePage/section/components/Nav/NavComponentSection'
+import NavComponentSection from '../HomePage/section/components/Nav/NavComponentSection'
 import CardCart from './component/CardCart/CardCart'
-import { useCart } from '../../../../context/CartContext';
+import { useCartStore } from '../../stores/useCartStore';
 
 function CartPage() {
   const {
@@ -13,9 +13,8 @@ function CartPage() {
     cartData,
     productsData,
     isEmpty,
-    refetch,
     removeItemInCart,
-  } = useCart();
+  } = useCartStore();
 
   const [selectedItems, setSelectedItems] = useState([])
   

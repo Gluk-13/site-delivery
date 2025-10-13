@@ -3,14 +3,14 @@ import styles from './FavoritePage.module.scss'
 import CardContent from '../HomePage/section/components/CardContent/CardContent';
 import NavComponentSection from '../HomePage/section/components/Nav/NavComponentSection';
 import PageList from '../HomePage/section/components/PageList/PageList';
-import { useFavorites } from '../../context/FavoritesContext';
+import { useFavoriteStore } from '../../stores/useFavoriteStore';
 
 function FavoritePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [products, setProducts] = useState ([])
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(10);
-  const { favorites, loading, favoritesCount } = useFavorites()
+  const { favorites, loading, favoritesCount } = useFavoriteStore()
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -77,12 +77,12 @@ function FavoritePage() {
             Избранное
           </h1>
           <div className={styles.favorites__quantity_container}>
-            <p className={styles.favorites__quantity}>{favoritesCount}</p>
+            <p className={styles.favorites__quantity}>{favorites.length}</p>
           </div>
         </div>
         {isLoading ? (
             <div>Загрузка избранных товаров...</div>
-        ) : favoritesCount === 0 ? (
+        ) : favorites.length === 0 ? (
             <div className={styles.empty}>В избранном пока ничего нет</div>
         ) : (
               <>
@@ -110,7 +110,7 @@ function FavoritePage() {
                 </div>
                 <PageList
                   productsProps={products}
-                  totalProduct={favoritesCount}
+                  totalProduct={favorites.length}
                   currentPage={currentPage}
                   productsPerPage={productsPerPage}
                   onPageChange={setCurrentPage}
