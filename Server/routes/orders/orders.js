@@ -7,17 +7,10 @@ router.get('/:userId', async (req, res) => {
 
     try {
         const dbResult = await pool.query('SELECT * FROM orders WHERE user_id = $1',[userId])
- 
-        if (dbResult.rows.length === 0) {
-            return res.status(401).json({
-                success: false,
-                message: 'Заказы этого пользователя не найдены' 
-            })
-        }
 
         return res.status(200).json({
             success: true,
-            data: dbResult.rows[0]
+            data: dbResult.rows
         })
 
     } catch(error) {
@@ -30,7 +23,7 @@ router.get('/:userId', async (req, res) => {
 
 router.post('/create/:userId', async (req, res) => {
     const userId = req.params.userId
-    const {totalPrice, orderNumber, items} = req.body
+    const {totalPrice, orderNumber, items, deliveryAddress, comment} = req.body
     let orderId;
 
     try {
@@ -41,8 +34,8 @@ router.post('/create/:userId', async (req, res) => {
                 message: 'Нет товаров для добавления в корзину'
             })
         }
-        const addOrders = await pool.query('INSERT INTO orders (user_id, order_number, total_amount, status) VALUES ($1, $2, $3, $4) RETURNING id',
-            [userId, orderNumber, totalPrice, 'pending'])
+        const addOrders = await pool.query('INSERT INTO orders (user_id, order_number, total_amount, status, address, comment) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+            [userId, orderNumber, totalPrice, 'Новый', deliveryAddress, comment])
         if (!addOrders.rows[0].id) {
             return res.status(403).json({
                 success: false,
@@ -53,13 +46,12 @@ router.post('/create/:userId', async (req, res) => {
         orderId = addOrders.rows[0].id;
 
         await pool.query(`
-            INSERT INTO order_items (order_id, product_id, quantity, price) 
-            SELECT $1, UNNEST($2::int[]), UNNEST($3::int[]), UNNEST($4::decimal[])
+            INSERT INTO order_items (order_id, product_id, quantity) 
+            SELECT $1, UNNEST($2::int[]), UNNEST($3::int[])
         `, [
             orderId, 
             items.map(item => item.productId), 
-            items.map(item => item.quantity),     
-            items.map(item => item.price)      
+            items.map(item => item.quantity),    
         ]);
 
         return res.status(200).json({
@@ -77,6 +69,31 @@ router.post('/create/:userId', async (req, res) => {
         })
     }
 })
+
+router.get('/:orderId/items', async (req, res) => {
+    const orderId = req.params.orderId;
+
+    try {
+        const itemsResult = await pool.query(
+            `SELECT oi.* 
+             FROM order_items oi 
+             WHERE oi.order_id = $1`,
+            [orderId]
+        );
+
+        return res.status(200).json({
+            success: true,
+            data: itemsResult.rows
+        });
+
+    } catch(error) {
+        console.error('Error fetching order items:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Ошибка сервера при получении товаров заказа'
+        });
+    }
+});
 
 router.patch('/status/:orderId', async (req, res) => {
     const orderId = req.params.orderId

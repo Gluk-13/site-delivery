@@ -15,22 +15,9 @@ function CardCart({
         isLoading, 
     } = useCartStore();
 
-    const { id, name, price, discount_percent, discount_price, imageUrl } = product
+    const { id, name, price, discount_percent, discount_price, image_url} = product
+    console.log(image_url)
     const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
-    const [imageError, setImageError] = useState(false);
-
-    const getImageUrl = () => {
-        if (imageError) {
-            return '/placeholder-image.jpg';
-        }
-        if (!imageUrl) {
-            console.warn('Image URL is undefined for product:', id);
-            return '/placeholder-image.jpg';
-        }
-        const formattedImageUrl = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
-        return `${API_BASE_URL}${formattedImageUrl}`;
-    }
-
     const handleAddToCart = async (qty = productQuantity) => {
         await addToCart(id, qty)
     }
@@ -61,14 +48,14 @@ function CardCart({
 
     const currentPrice = discount_price || price;
     const totalPrice = currentPrice * (productQuantity || 1);
+    const newPercent = discount_percent * 100 / 100
 
   return ( 
     <div className={styles.card}>
         <div className={styles.card__container_img}>
             <img className={styles.card__img} 
-            src={getImageUrl()} 
-            alt=""
-            onError={() => setImageError(true)} 
+            src={`${API_BASE_URL}/uploads/${image_url}`}
+            alt={image_url}
             />
             <label className={styles.card__checkbox}>
                 <input 
@@ -80,7 +67,6 @@ function CardCart({
                 />
                 <span className={styles.card__checkbox_checkmark}></span>
             </label>
-            {imageError && <div className={styles.card__placeholder}>Ошибка загрузки</div>}
         </div>
         <div className={styles.card__container_info}>
             <h3 className={styles.card__info_title}>{name}</h3>
@@ -108,7 +94,7 @@ function CardCart({
                 </div>
                 <p className={styles.card__info_descr}>за шт.</p>
                 <div className={styles.card__discount_container}>
-                    -{discount_percent}%
+                    -{newPercent}%
                 </div>
             </div>
             )}

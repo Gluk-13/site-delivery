@@ -7,12 +7,17 @@ export const useOrdersStore = create(
     persist(
         (set, get) => ({
 
+        locationDelivery: {},
         ordersData: [],
         productsData: [],
         isOrdersLoading: true,
         isStatusLoading: false,
         isOrdersError: null,
         isEmptyOrder: false,
+
+        setAddressDelivery: (data) => {
+            set({ locationDelivery: data });
+        },
 
         fetchOrders: async () => {
             try {
@@ -24,7 +29,7 @@ export const useOrdersStore = create(
             const response = await fetch(`${API_BASE_URL}/orders/${userId}`, {
                 method: 'GET',
                 headers: {
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 },
             });
@@ -36,51 +41,118 @@ export const useOrdersStore = create(
             if (!ordersDataFromServer.success) {
                 throw new Error(ordersDataFromServer.message || 'Ошибка при получении заказов');
             }
-
+            
             let ordersData = ordersDataFromServer.data || [];
-
-            const ordersWithProducts = await Promise.all(
-                ordersData.map(async (order) => {
-                if (!order.items || order.items.length === 0) {
-                    return { ...order, productsInfo: [] };
-                }
-
-                const productIds = order.items.map(item => item.product_id);
                 
-                const productsResponse = await fetch(`${API_BASE_URL}/products/bulk`, {
-                    method: 'POST',
-                    headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ ids: productIds }),
+                const ordersWithItems = await Promise.all(
+                    ordersData.map(async (order) => {
+                        const itemsResponse = await fetch(`${API_BASE_URL}/orders/${order.id}/items`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        let orderItems = [];
+                        if (itemsResponse.ok) {
+                            const itemsResult = await itemsResponse.json();
+                            if (itemsResult.success) orderItems = itemsResult.data;
+                        }
+
+                        const productIds = orderItems.map(item => item.product_id);
+                        let productsInfo = [];
+                        
+                        if (productIds.length > 0) {
+                            const productsResponse = await fetch(`${API_BASE_URL}/products/bulk`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ ids: productIds }),
+                            });
+
+                            if (productsResponse.ok) {
+                                const result = await productsResponse.json();
+                                if (result.success) productsInfo = result.data;
+                            }
+                        }
+
+                        return {
+                            ...order,
+                            items: orderItems,
+                            productsInfo
+                        };
+                    })
+                );
+
+                set({ 
+                    ordersData: ordersWithItems,
+                    isEmptyOrder: ordersWithItems.length === 0,
+                    isOrdersLoading: false,
+                    isOrdersError: null
                 });
 
-                let productsInfo = [];
-                if (productsResponse.ok) {
-                    const result = await productsResponse.json();
-                    if (result.success) productsInfo = result.data;
-                }
+            } catch (error) {
+                set({ 
+                    isOrdersError: error.message, 
+                    isOrdersLoading: false 
+                });
+            }
+        },
 
-                return {
-                    ...order,
-                    productsInfo
-                };
+        createOrder: async ( cartItems, addressDelivery, comment = '' ) => {
+            try {
+            set({ isOrdersLoading: true, isError: null });
+            
+            const token = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+
+            const itemsToOrder = cartItems.length > 0 
+                ? cartItems.map(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    price: item.product.price,
+                })) : [];
+            console.log(cartItems)
+            console.log('Items to order:', itemsToOrder);
+            const totalPrice = itemsToOrder.reduce((total, item) => {
+                return total + item.price * item.quantity;
+            }, 0);
+
+            const orderNumber = `ORD-${Date.now()}-${userId}-${Math.random().toString(36).substr(2, 9)}`;
+
+            const response = await fetch(`${API_BASE_URL}/orders/create/${userId}`, {
+                method: 'POST',
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                items: itemsToOrder,
+                totalPrice: totalPrice,
+                orderNumber: orderNumber,
+                deliveryAddress: addressDelivery,
+                comment: comment
                 })
-            );
-
-            set({ 
-                ordersData: ordersWithProducts,
-                isEmptyOrder: ordersWithProducts.length === 0,
-                isOrdersLoading: false,
-                isOrdersError: null
             });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Ошибка при создании заказа');
+            }
+
+            await get().fetchOrders()
+            
+            return result;
 
             } catch (error) {
-            set({ 
-                isOrdersError: error.message, 
-                isOrdersLoading: false 
-            });
+                set({ isError: error.message });
+                throw error;
+            } finally {
+                set({ isOrdersLoading: false, isCartLoading: false });
             }
         },
 

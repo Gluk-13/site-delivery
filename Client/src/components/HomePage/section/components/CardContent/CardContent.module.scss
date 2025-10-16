@@ -9,12 +9,20 @@
 
     background-color: var(--font-white);
 
+    &__price_primary {
+        display: flex;
+        
+    }
+
     &__container_img {
         display: flex;
         justify-content: space-between;
         flex-direction: column;
         width: 100%;
         height: calc(var(--size-base)*40);
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
     }
 
     &__container_svg {
@@ -28,6 +36,8 @@
         margin-left: auto;
         margin-right: 6px;
         margin-top: 6px;
+        margin-bottom: auto;
+        position: relative;
 
         &:hover {
             transform: scale(1.1);
@@ -129,6 +139,21 @@
             color: var(--font-white);
             border: none;
         }
+    }
+
+    &__cart_container {
+        display: flex;
+    }
+
+    &__cart_svg {
+        display: flex;
+        width: calc(var(--size-base)*20);
+        column-gap: calc(var(--size-base)*2);
+        justify-content: start;
+        padding: 4px;
+        align-items: center;
+        font-family: 'Rubik';
+        font-weight: 700;
     }
 
     &__added_container {

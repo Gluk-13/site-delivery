@@ -50,7 +50,7 @@ router.post('/bulk', async (req, res) => {
 
 router.get('/new', async (req, res) => {
     try {
-        const query = `SELECT * FROM products WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
+        const query = `SELECT * FROM products WHERE created_at >= CURRENT_DATE - INTERVAL '100 days'
         ORDER BY created_at DESC;`
         const dbNewProduct = await pool.query(query);
         const newProduct = dbNewProduct.rows

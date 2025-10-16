@@ -23,6 +23,9 @@
     }
 
     &__container_list {
+        display: flex;
+        flex-direction: column;
+        row-gap: calc(var(--size-base)*10);
         margin-top: calc(var(--size-base)*15);
     }
 }

@@ -9,8 +9,10 @@ function FormPayment({
     totalDiscount = 0, 
     itemsCount = 0, 
     hasSelectedItems = false,
+    setIsCartPage,
+    isCartPage,
+    onCheckout
 }) {
-
     const { createOrder, isOrderLoading } = useCartStore();
 
     const isAlert = totalPrice > 1000 ? true : false
@@ -92,12 +94,30 @@ function FormPayment({
                         Минимальная сумма заказа 1000р
                     </p>
                 </div>) : null}
-                <button className={styles.form__order_btn}
-                onClick={handleAddOrder}
-                disabled={!isAlert}
-                >
-                    Оформить заказ
-                </button>
+                {isCartPage ? (
+                    <button className={styles.form__order_btn}
+                    onClick={()=>setIsCartPage(false)}
+                    disabled={!isAlert}
+                    >
+                        Оформить заказ
+                    </button>
+                ) : (
+                    <div className={styles.form__container_btn}
+                        style={{justifyContent: 'space-between'}}
+                    >
+                        <button className={styles.form__btn_post}
+                        onClick={()=>setIsCartPage(false)}
+                        disabled={true}
+                        >
+                            Оплатить заказ
+                        </button>
+                        <button className={styles.form__order_add}
+                        onClick={onCheckout}
+                        >
+                            Оплатить при получении
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     </div>

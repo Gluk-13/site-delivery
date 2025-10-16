@@ -6,14 +6,18 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 export const useCartStore = create(
     persist(
         (set, get) => ({
-
+        
         cartData: [],
         productsData: [],
-        isCartLoading: true,
+        isCartLoading: false,
         isOrderLoading: false,
         isError: null,
         isEmpty: false,
         loadingItems: {},
+
+        setAddressDelivery: (data) => {
+            set({ adressDelivery: data });
+        },        
 
         getCartItem: (productId) => {
             const { cartData } = get();
@@ -89,6 +93,7 @@ export const useCartStore = create(
             if (!response.ok) throw new Error('Ошибка при добавлении в корзину');
 
             await get().fetchCart();
+            set({ isCartLoading: false })
             
             } catch (error) {
             set({ 
@@ -117,60 +122,6 @@ export const useCartStore = create(
                 isError: error.message, 
                 isCartLoading: false 
             });
-            }
-        },
-
-        createOrder: async (selectedItems = []) => {
-            try {
-            set({ isOrderLoading: true, isError: null });
-            
-            const { cartData, productsData } = get();
-            const token = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
-
-            const itemsToOrder = selectedItems.length > 0 
-                ? selectedItems 
-                : cartData.map(item => ({
-                    productId: item.productId,
-                    quantity: item.quantity,
-                    price: item.price
-                }));
-
-            const totalPrice = itemsToOrder.reduce((total, item) => {
-                const product = productsData.find(p => p.id === item.productId);
-                return total + (product?.price || 0) * item.quantity;
-            }, 0);
-
-            const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-            const response = await fetch(`${API_BASE_URL}/orders/create/${userId}`, {
-                method: 'POST',
-                headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                items: itemsToOrder,
-                totalPrice: totalPrice,
-                orderNumber: orderNumber,
-                })
-            });
-
-            const result = await response.json();
-
-            if (!response.ok || !result.success) {
-                throw new Error(result.error || 'Ошибка при создании заказа');
-            }
-
-            await get().fetchCart();
-            
-            return result;
-
-            } catch (error) {
-            set({ isError: error.message });
-            throw error;
-            } finally {
-            set({ isOrderLoading: false });
             }
         },
 

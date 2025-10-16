@@ -66,6 +66,10 @@
     }
 
     &__list {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: calc(var(--size-base)*5);
         margin-bottom: calc(var(--size-base)*10);
     }
 

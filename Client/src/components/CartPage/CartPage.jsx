@@ -5,6 +5,8 @@ import styles from './CartPage.module.scss'
 import NavComponentSection from '../HomePage/section/components/Nav/NavComponentSection'
 import CardCart from './component/CardCart/CardCart'
 import { useCartStore } from '../../stores/useCartStore';
+import DeliveryForm from './component/DeliveryPage/DeliveryForm'
+import { useOrdersStore } from '../../stores/useOrderStore'
 
 function CartPage() {
   const {
@@ -16,7 +18,44 @@ function CartPage() {
     removeItemInCart,
   } = useCartStore();
 
+  const {
+    createOrder,
+    setAddressDelivery,
+  } = useOrdersStore()
+
   const [selectedItems, setSelectedItems] = useState([])
+  const [isCartPage, setIsCartPage] = useState(true)
+  const [isDeliveryValid, setIsDeliveryValid] = useState(false);
+  const [deliveryData, setDeliveryData] = useState()
+
+  
+  const handleCheckout = async () => {
+    if (!validateDelivery()) {
+      alert('Заполните адрес доставки');
+      return;
+    }
+
+    setAddressDelivery(deliveryData)
+
+    try {
+      await createOrder(getCartItems, deliveryData, deliveryData.comment);
+
+      if (selectedItems.length > 0) {
+        const deletePromises = selectedItems.map(productId => 
+          removeItemInCart(productId)
+        );
+        await Promise.all(deletePromises);
+        setSelectedItems([]);
+        setIsCartPage(true)
+      }
+    } catch (error) {
+      console.error('Ошибка в создании заказа',error)
+    }
+  };
+
+  const validateDelivery = () => {
+    return deliveryData?.city && deliveryData?.street && deliveryData?.house;
+  };
   
   const getCartItems = useMemo(() => {
     if (cartData.length === 0 || productsData.length === 0) {
@@ -36,6 +75,7 @@ function CartPage() {
   const handleSelectAll = () => {
     if (selectedItems.length === getCartItems.length) {
       setSelectedItems([])
+      console.log(selectedItems)
     } else {
       const allIds = getCartItems.map(item => item.productId)
       setSelectedItems(allIds)
@@ -71,7 +111,6 @@ function CartPage() {
     setSelectedItems(prev => prev.filter(id => currentProductIds.includes(id)));
   }, [getCartItems]);
 
-  //Рассчеты данных под заполнение форм
   const useCartCalculations = () => {
     const getItemsToCalculate = () => {
       if (!getCartItems || !Array.isArray(getCartItems)){
@@ -89,7 +128,7 @@ function CartPage() {
       for (const item of items) {
         total += item.quantity
       }
-      return total
+      return Math.floor(total * 100) / 100;
     }
 
     const calcTotalPrice = () => {
@@ -99,7 +138,7 @@ function CartPage() {
         const price = item.product?.discount_price || item.product?.price || 0
         total += price * item.quantity
       }
-      return total
+      return Math.floor(total * 100) / 100;
     }
 
     const calcOriginPrice = () => {
@@ -109,7 +148,7 @@ function CartPage() {
         const price = item.product?.price || 0
         total += price * item.quantity
       }
-      return total
+      return Math.floor(total * 100) / 100;
     }
 
     const calcTotalDiscounted = () => {
@@ -138,10 +177,12 @@ function CartPage() {
     };
   }
 
+
   const cartCalculations = useCartCalculations();
   const cartDataForForm = cartCalculations.getAllCalculations();
-
   return (
+    <>
+  {isCartPage ? (
     <section className={styles.cart}>
       <NavComponentSection
         primaryLink='Главная'
@@ -186,6 +227,7 @@ function CartPage() {
                     productQuantity={item.quantity}
                     isSelected={selectedItems.includes(item.productId)}
                     onSelectChange={(isSelected) => handleItemSelect(item.productId, isSelected)}
+                    imageUrl={item.product.image_url}
                   />
                 ))
               )}
@@ -198,10 +240,52 @@ function CartPage() {
             totalDiscount={cartDataForForm.totalDiscount}
             itemsCount={cartDataForForm.itemsCount}
             hasSelectedItems={cartDataForForm.hasSelectedItems}
+            setIsCartPage={setIsCartPage}
+            isCartPage={isCartPage}
+            onCheckout={handleCheckout}
+            
+          />
+        </div>
+      </div>
+    </section>) : (
+    <section className={styles.cart}>
+      <NavComponentSection
+        primaryLink='Главная'
+        secondLink='Корзина'
+      />
+      <div className={styles.cart__content}>
+        <div className={styles.cart__content_container}>
+          <h1 className={styles.cart__container_title}>
+            Доставка
+          </h1>
+          <div className={styles.cart__quantity_container}>
+            <p className={styles.cart__quantity}>{cartDataForForm.totalQuantity}</p>
+          </div>
+        </div>
+        <div className={styles.cart__container_cart}>
+          <div className={styles.cart__container_delivery}>
+            <DeliveryForm
+              onDataChange={setDeliveryData}
+              onValidationChange={setIsDeliveryValid}
+            />
+          </div>
+          <FormPayment 
+            totalQuantityProduct={cartDataForForm.totalQuantity}
+            totalPrice={cartDataForForm.totalPrice}
+            originalPrice={cartDataForForm.originalPrice}
+            totalDiscount={cartDataForForm.totalDiscount}
+            itemsCount={cartDataForForm.itemsCount}
+            hasSelectedItems={cartDataForForm.hasSelectedItems}
+            setIsCartPage={setIsCartPage}
+            isCartPage={isCartPage}
+            onCheckout={handleCheckout}
+            isFormValid={isDeliveryValid}
           />
         </div>
       </div>
     </section>
+    )}
+  </>
   )
 }
 
