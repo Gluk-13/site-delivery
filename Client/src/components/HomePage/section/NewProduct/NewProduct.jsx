@@ -64,6 +64,7 @@ function NewProduct() {
     const currentProducts = products.slice(startIndex, startIndex + productsPerPage)
     
     const displayedProducts = isFullSection ? currentProducts : products.slice(0,5)
+    console.log(displayedProducts)
 
   if (isFullSection) { return (
       <section className={styles['new-products']}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './CardCart.module.scss'
-import {useCart} from '../../../../../../context/CartContext'
+import { useCartStore } from '../../../../stores/useCartStore.js'
 
 function CardCart({
     productQuantity,
@@ -13,24 +13,11 @@ function CardCart({
         addToCart, 
         removeItemInCart, 
         isLoading, 
-    } = useCart();
+    } = useCartStore();
 
-    const { id, name, price, discount_percent, discount_price, imageUrl } = product
+    const { id, name, price, discount_percent, discount_price, image_url} = product
+    console.log(image_url)
     const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
-    const [imageError, setImageError] = useState(false);
-
-    const getImageUrl = () => {
-        if (imageError) {
-            return '/placeholder-image.jpg';
-        }
-        if (!imageUrl) {
-            console.warn('Image URL is undefined for product:', id);
-            return '/placeholder-image.jpg';
-        }
-        const formattedImageUrl = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
-        return `${API_BASE_URL}${formattedImageUrl}`;
-    }
-
     const handleAddToCart = async (qty = productQuantity) => {
         await addToCart(id, qty)
     }
@@ -61,14 +48,14 @@ function CardCart({
 
     const currentPrice = discount_price || price;
     const totalPrice = currentPrice * (productQuantity || 1);
+    const newPercent = discount_percent * 100 / 100
 
   return ( 
     <div className={styles.card}>
         <div className={styles.card__container_img}>
             <img className={styles.card__img} 
-            src={getImageUrl()} 
-            alt=""
-            onError={() => setImageError(true)} 
+            src={`${API_BASE_URL}/uploads/${image_url}`}
+            alt={image_url}
             />
             <label className={styles.card__checkbox}>
                 <input 
@@ -80,7 +67,6 @@ function CardCart({
                 />
                 <span className={styles.card__checkbox_checkmark}></span>
             </label>
-            {imageError && <div className={styles.card__placeholder}>Ошибка загрузки</div>}
         </div>
         <div className={styles.card__container_info}>
             <h3 className={styles.card__info_title}>{name}</h3>
@@ -108,7 +94,7 @@ function CardCart({
                 </div>
                 <p className={styles.card__info_descr}>за шт.</p>
                 <div className={styles.card__discount_container}>
-                    -{discount_percent}%
+                    -{newPercent}%
                 </div>
             </div>
             )}
@@ -118,7 +104,6 @@ function CardCart({
                 <div className={styles.card__btn_container}>
                     <button className={styles.card__quantity_btn}
                     onClick={handleDecrement}
-                    disabled={isLoading}
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M4.5 12C4.5 11.7239 4.72386 11.5 5 11.5H19C19.2761 11.5 19.5 11.7239 19.5 12C19.5 12.2761 19.2761 12.5 19 12.5H5C4.72386 12.5 4.5 12.2761 4.5 12Z" fill="white"/>

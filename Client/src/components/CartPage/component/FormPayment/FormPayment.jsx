@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './FormPayment.module.scss'
+import { useCartStore } from '../../../../stores/useCartStore.js'
 
 function FormPayment({ 
     totalQuantityProduct = 0,
@@ -8,7 +9,17 @@ function FormPayment({
     totalDiscount = 0, 
     itemsCount = 0, 
     hasSelectedItems = false,
+    setIsCartPage,
+    isCartPage,
+    onCheckout
 }) {
+    const { createOrder, isOrderLoading } = useCartStore();
+
+    const isAlert = totalPrice > 1000 ? true : false
+
+    const handleAddOrder = async () => {
+
+    }
 
     if (!hasSelectedItems) {
         return (
@@ -78,14 +89,35 @@ function FormPayment({
         </div>
         <div className={styles.form__container_btn}>
             <div className={styles.form__order_container}>
-                <div className={styles.form__order_border}>
+                {!isAlert ? (                <div className={styles.form__order_border}>
                     <p className={styles.form__order_alert}>
                         Минимальная сумма заказа 1000р
                     </p>
-                </div>
-                <button className={styles.form__order_btn}>
-                    Оформить заказ
-                </button>
+                </div>) : null}
+                {isCartPage ? (
+                    <button className={styles.form__order_btn}
+                    onClick={()=>setIsCartPage(false)}
+                    disabled={!isAlert}
+                    >
+                        Оформить заказ
+                    </button>
+                ) : (
+                    <div className={styles.form__container_btn}
+                        style={{justifyContent: 'space-between'}}
+                    >
+                        <button className={styles.form__btn_post}
+                        onClick={()=>setIsCartPage(false)}
+                        disabled={true}
+                        >
+                            Оплатить заказ
+                        </button>
+                        <button className={styles.form__order_add}
+                        onClick={onCheckout}
+                        >
+                            Оплатить при получении
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     </div>

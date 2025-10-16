@@ -1,0 +1,31 @@
+.orders {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &__content_container {
+        display: flex;
+        column-gap: calc(var(--size-base)*5);
+    }
+
+    &__container_title {
+        font-size: calc(var(--font-size)*16);
+        color: var(--font-black);
+        font-weight: 700;
+        font-family: 'Rubik';
+    }
+
+    &__container_list {
+        display: flex;
+        flex-direction: column;
+        row-gap: calc(var(--size-base)*10);
+        margin-top: calc(var(--size-base)*15);
+    }
+}
