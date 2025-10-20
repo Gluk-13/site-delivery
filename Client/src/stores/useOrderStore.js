@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useAuthStore } from './useAuthStore';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -23,10 +24,20 @@ export const useOrdersStore = create(
             try {
             set({ isOrdersLoading: true, isOrdersError: null });
             
-            const token = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
+            const token = useAuthStore.getState().token;
+            const userId = useAuthStore.getState().user?.id;
             
-            const response = await fetch(`${API_BASE_URL}/orders/${userId}`, {
+
+            if (!token || !userId) {
+                set({ 
+                    ordersData: [], 
+                    isOrdersLoading: false,
+                    isEmptyOrder: true 
+                });
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE_URL}/orders`, {
                 method: 'GET',
                 headers: {
                 'Authorization': `Bearer ${token}`,
@@ -106,8 +117,8 @@ export const useOrdersStore = create(
             try {
             set({ isOrdersLoading: true, isError: null });
             
-            const token = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
+            const token = useAuthStore.getState().token;
+            const userId = useAuthStore.getState().user?.id;
 
             const itemsToOrder = cartItems.length > 0 
                 ? cartItems.map(item => ({
@@ -123,7 +134,7 @@ export const useOrdersStore = create(
 
             const orderNumber = `ORD-${Date.now()}-${userId}-${Math.random().toString(36).substr(2, 9)}`;
 
-            const response = await fetch(`${API_BASE_URL}/orders/create/${userId}`, {
+            const response = await fetch(`${API_BASE_URL}/orders/create/`, {
                 method: 'POST',
                 headers: {
                 'Authorization': `Bearer ${token}`,
@@ -160,7 +171,7 @@ export const useOrdersStore = create(
             set({ isStatusLoading: true, isOrdersError: null });
 
             try {
-            const token = localStorage.getItem('authToken');
+            const token = useAuthStore.getState().token;
             
             const response = await fetch(`${API_BASE_URL}/orders/status/${orderId}`, {
                 method: 'PATCH',
@@ -224,6 +235,10 @@ export const useOrdersStore = create(
         getOrdersWithProducts: () => {
             const { ordersData } = get();
             return ordersData.filter(order => order.productsInfo && order.productsInfo.length > 0);
+        },
+
+        clearOrders: () => {
+            set({ ordersData: [], isLoading: false });
         }
         }),
         {

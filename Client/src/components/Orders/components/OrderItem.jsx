@@ -26,6 +26,8 @@ function OrderItem({order}) {
         
     }
 
+    console.log(productsInfo)
+
     const getProductQuantity = (productId) => {
         const item = items.find(item => item.product_id === productId);
         return item ? item.quantity : 1;

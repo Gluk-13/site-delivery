@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useAuthStore } from './useAuthStore';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -28,7 +29,8 @@ export const useCartStore = create(
             try {
             set({ isCartLoading: true, isError: null });
             
-            const token = localStorage.getItem('authToken');
+            const userId = useAuthStore.getState().user?.id;
+            const token = useAuthStore.getState().token;
             const response = await fetch(`${API_BASE_URL}/cart`, {
                 method: 'GET',
                 headers: {
@@ -78,8 +80,13 @@ export const useCartStore = create(
             try {
             set({ isCartLoading: true, isError: null });
             
-            const token = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
+            const token = useAuthStore.getState().token;
+            const userId = useAuthStore.getState().user?.id;
+
+            if (!token || !userId) {
+                set({ isCartLoading: false, isError: 'Вы не авторизованы' });
+                return
+            }
             
             const response = await fetch(`${API_BASE_URL}/cart/items`, {
                 method: 'POST',
@@ -87,7 +94,7 @@ export const useCartStore = create(
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, productId, quantity })
+                body: JSON.stringify({ productId, quantity })
             });
 
             if (!response.ok) throw new Error('Ошибка при добавлении в корзину');
@@ -107,7 +114,7 @@ export const useCartStore = create(
             try {
             set({ isCartLoading: true });
             
-            const token = localStorage.getItem('authToken');
+            const token = useAuthStore.getState().token;
             const response = await fetch(`${API_BASE_URL}/cart/items/${productId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
@@ -140,9 +147,11 @@ export const useCartStore = create(
             const product = productsData.find(p => p.id === item.productId);
             return total + (product?.price || 0) * item.quantity;
             }, 0);
+        },
+
+        clearCart: async () => {
+            set({ cartData: [], isCartLoading: false })
         }
-
-
         }),
         {
         name: 'cart-storage',

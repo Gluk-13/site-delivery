@@ -17,16 +17,16 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
         }
 
         const dbResult = await pool.query('SELECT * FROM users WHERE email = $1',[email])
-            //Безопасно проверяем по почте есть ли вообще такой юзер
+
         if (!dbResult.rows[0]) {
-            return res.status(401).json({//Если его нет то ошибка и сообщение юзеру
+            return res.status(401).json({
                 success: false,
                 message: 'Неверный логин или пароль'
             });
         }
         
-        const dbPassword = dbResult.rows[0].password_hash //Пароль найденного юзера
-        const result = await bcrypt.compare(password, dbPassword); //Сверяем пароль и хэш в бд
+        const dbPassword = dbResult.rows[0].password_hash 
+        const result = await bcrypt.compare(password, dbPassword);
 
         if (!result) {
             return res.status(401).json({
@@ -69,7 +69,7 @@ router.put('/register', async (req, res) => {
         const { email, password, name } = req.body;
 
         if (!email || !password || !name) {
-            return res.status(401).json({
+            return res.status(402).json({
                 success: false,
                 message: 'Не введет пароль, почта или имя'
             })
@@ -146,5 +146,44 @@ router.patch('/reset',async (req, res) => {
         }
     }
 })
+
+router.post('/refresh',async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ message: 'Токен не отправлен' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+
+        const newToken = jwt.sign(
+            { userId: decoded.userId },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ token: newToken });
+
+    } catch (error) {
+        res.status(403).json({ message: 'Невалидный токен' });
+    }
+})
+
+router.post('/logout', (req, res) => {
+  try {
+    
+    res.json({ 
+      success: true, 
+      message: 'Успешный выход' 
+    });
+    
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка выхода' 
+    });
+  }
+});
 
 export default router;
