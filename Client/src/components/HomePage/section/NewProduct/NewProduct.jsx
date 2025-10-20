@@ -24,7 +24,6 @@ function NewProduct() {
         setError(null);
         
         const response = await fetch(`${API_BASE_URL}/products/new`)
-        console.log(response.status,response.statusText)
 
         if (!response.ok) {
             throw new Error (`Ошибка загрузки данных: ${response.status} ${response.statusText}`)
@@ -64,7 +63,6 @@ function NewProduct() {
     const currentProducts = products.slice(startIndex, startIndex + productsPerPage)
     
     const displayedProducts = isFullSection ? currentProducts : products.slice(0,5)
-    console.log(displayedProducts)
 
   if (isFullSection) { return (
       <section className={styles['new-products']}>

@@ -31,6 +31,7 @@ export const useCartStore = create(
             
             const userId = useAuthStore.getState().user?.id;
             const token = useAuthStore.getState().token;
+
             const response = await fetch(`${API_BASE_URL}/cart`, {
                 method: 'GET',
                 headers: {

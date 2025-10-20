@@ -1,0 +1,23 @@
+.category {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    &__title {
+        font-size: calc(var(font-size)*10);
+        font-family: 'Rubik';
+        font-weight: 700;
+        color: var(--font-black);
+        margin-bottom: calc(var(--size-base)*10);
+    }
+
+    &__container {
+        display: grid;
+        flex: 1;
+        grid-template-columns: repeat(5, 1fr);
+        gap: calc(var(--size-base)*5);
+        width: 100%;
+        font-family: 'Rubik';
+        font-weight: 400;
+    }
+}

@@ -49,6 +49,10 @@ export const useAuthStore = create(
                         isLoading: false,
                         error: null
                     })
+
+                    useCartStore.getState().fetchCart();
+                    useFavoriteStore.getState().loadFavorites();
+                    useOrdersStore.getState().fetchOrders();
                     
                     return {success: true}
 

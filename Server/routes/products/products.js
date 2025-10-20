@@ -88,4 +88,38 @@ router.get('/discounted', async (req, res) => {
     }
 });
 
+router.get('/category/:categoryName', async (req, res) => {
+  try {
+    const { categoryName } = req.params;
+    
+    if (!categoryName) {
+        return res.json({
+            success: false,
+            message: 'Категория невалидна'
+        })
+    }
+    
+    const products = await pool.query(
+      'SELECT * FROM products WHERE category = $1',
+      [categoryName]
+    );
+
+    if (products.rows.length === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'Продукты по этой категории не найдены'
+        })
+    }
+    
+    res.status(200).json({
+        success: true,
+        products: products.rows,
+    });
+
+  } catch (error) {
+    console.error('Ошибка при получении товаров:', error);
+    res.status(500).json({ error: 'Ошибка подключения к бд' });
+  }
+});
+
 export default router;
