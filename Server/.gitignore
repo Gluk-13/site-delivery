@@ -45,7 +45,6 @@ ehthumbs.db
 Thumbs.db
 
 # Uploads (если они в папке проекта)
-uploads/
 *.tmp
 
 # Database (если используете локальную БД)
