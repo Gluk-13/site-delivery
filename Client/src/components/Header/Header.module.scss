@@ -5,7 +5,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1); // горизонтальное смещение, вертикальное, размытие, цвет
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
 
     
     &__nav {
@@ -100,5 +101,76 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    &__author_svg {
+        transition: transform 0.2s ease;
+        
+        &.rotated {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__dropdown_menu {
+        width: calc(var(--size-base)*50);
+        position: absolute;
+        top: 100%;
+        right: calc(var(--size-base)*25);
+        margin-top: 8px;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        min-width: 200px;
+        z-index: 10;
+        overflow: hidden;
+        font-family: 'Rubik';
+        font-weight: 400;
+    }
+
+    &__menu_header {
+        display: flex;
+        width: calc(var(--size-base)*50);
+        padding: 0 calc(var(--size-base)*2);
+    }
+
+    &__user_name {
+        font-weight: 700;
+    }
+
+    &__menu_items {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__menu_icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__menu_item {
+        display: flex;
+        width: 100%;
+        justify-content: start;
+        align-items: center;
+        padding: calc(var(--size-base)*1) calc(var(--size-base)*2);
+        &:hover {
+            background-color: var(--light-gray);
+        }
+    }
+
+    &__author_link {
+        display: flex;
+        justify-content: center;
+        align-self: center;
+        font-family: 'Rubik';
+        font-weight: 400;
+        text-decoration: none;
+        
+        :hover {
+            scale: 1.2;
+        }
     }
 }

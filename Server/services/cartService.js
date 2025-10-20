@@ -33,23 +33,6 @@ class CartService {
         });
     }
 
-    async updateItem(userId, productId, newQuantity) {
-        const redisClient = getRedisClient();
-        const key = getCartKey(userId);
-        
-        if (newQuantity <= 0) {
-            await this.removeItem(userId, productId);
-        } else {
-            const item = {
-                productId,
-                quantity: newQuantity
-            };
-            await redisClient.hset(key, productId, JSON.stringify(item));
-        }
-        
-        return this.getCart(userId);
-    }
-
     async removeItem(userId, productId) {
         const redisClient = getRedisClient();
         const key = getCartKey(userId);
@@ -57,13 +40,6 @@ class CartService {
         await redisClient.hdel(key, productId)
         
         return this.getCart(userId);
-    }
-
-    async clearCart(userId) {
-        const redisClient = getRedisClient();
-        const key = getCartKey(userId)
-
-        await redisClient.del(key) 
     }
 }
 

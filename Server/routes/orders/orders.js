@@ -2,8 +2,8 @@ import express, { Router } from 'express';
 const router = express.Router();
 import pool from '../../config/db.js'
 
-router.get('/:userId', async (req, res) => {
-    const userId = req.params.userId
+router.get('/', async (req, res) => {
+    const userId = req.userId
 
     try {
         const dbResult = await pool.query('SELECT * FROM orders WHERE user_id = $1',[userId])
@@ -21,8 +21,8 @@ router.get('/:userId', async (req, res) => {
     } 
 })
 
-router.post('/create/:userId', async (req, res) => {
-    const userId = req.params.userId
+router.post('/create', async (req, res) => {
+    const userId = req.userId
     const {totalPrice, orderNumber, items, deliveryAddress, comment} = req.body
     let orderId;
 

@@ -3,7 +3,7 @@ import favoriteService from '../services/favoriteService.js'
 class FavorController {
     async getFavour(req, res, next) {
         try {
-            const userId = req.user.userId;
+            const userId = req.userId;
             const favorites = await favoriteService.getFavor(userId)
             if (!userId) {
                 return res.status(400).json({ error: 'Не передан ID пользователя' });
@@ -16,7 +16,7 @@ class FavorController {
 
     async addItem(req, res, next) {
         try {
-            const userId = req.user.userId;
+            const userId = req.userId;
             if (!userId) {
                 return res.status(400).json({ error: 'Не передан ID пользователя' });
             }
@@ -30,7 +30,7 @@ class FavorController {
 
     async removeItem(req, res, next) {
         try {
-            const userId = req.user.userId;
+            const userId = req.userId;
             if (!userId) {
                 return res.status(400).json({ error: 'Не передан ID пользователя' });
             }

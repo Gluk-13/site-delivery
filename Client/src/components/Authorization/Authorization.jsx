@@ -1,60 +1,51 @@
 import React, { useState } from 'react'
 import styles from './Authorization.module.scss'
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../stores/useAuthStore'
 
 
 const Authorization = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false); //Загрузка
-    const [message, setMessage] = useState(''); //Сообщение от формы
-    const [currentView, setCurrentView] = useState('login'); //Определяем какой компонент показать
-    const [loginData, setLoginData] = useState({ email: '', password: ''}) //Настраиваем что ждем от форм логин, регистрации и смены пароля
+    const { 
+        login, 
+        register, 
+        resetPassword, 
+        isLoading,
+        error, 
+        clearError 
+    } = useAuthStore();
+    const [message, setMessage] = useState(''); 
+    const [currentView, setCurrentView] = useState('login');
+    const [loginData, setLoginData] = useState({ email: '', password: ''})
     const [registerData, setRegisterData] = useState({ 
         name: '',
         email: '',
         password: '',
         confirmPassword: ''
     })
-    const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
     const [resetData, setResetData] = useState({ email: '', password: '', confirmPassword: ''});
 
-    //Логин и его обработка
+    const handleViewChange = (view) => {
+        setCurrentView(view);
+        setMessage('');
+        clearError();
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        setLoading(true); //Ставим загрузку пока не получим ответ из fetch 
-        setMessage(''); //Пустое сообщение до ошибки
-        try {
-        const response = await fetch(`${API_BASE_URL}/users/login`,{ //Дожидаемся ответа из фетч запроса
-                method: 'POST', // POST потому что сверяем данные при авторизации
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    email: loginData.email,
-                    password: loginData.password
-                }), //Парсим то что ввел клиент и отправляем на сервер
-            })
+        setMessage('');
+        clearError();
 
-            if (!response.ok) {
-                throw new Error(`HTTP error status: ${response.status}`)
-            }
-
-            const data = await response.json(); //Дожидаемся пока данные станут формата json
-
-            if (data.success) {
-                localStorage.setItem('authToken',data.token)
-                localStorage.setItem('userName',data.user.userName)
-                localStorage.setItem('userId',data.user.id)
-                navigate('/')
-            } else {
-                setMessage(data.message || 'Ошибка подключения...')
-            }
-        } catch (error){
-            setMessage('Ошибка подключения к серверу'); //Обработка ошибки вне конструкции try
-        } finally {
-            setLoading(false) //Чем бы не закончилась функция выключаем плашку загрзки
+        const result = await login(loginData.email, loginData.password);
+        
+        if (result.success) {
+            navigate('/');
+        } else {
+            setMessage(result.message || 'Ошибка входа');
         }
-    }
+    };
 
-    const renderLoginForm = () => ( // Рендер формы под логин
+    const renderLoginForm = () => (
         <form onSubmit={handleLogin} className={styles.authorization__container_content}>
             <h1 className={styles.authorization__title}>Вход</h1>
             <div className={styles.authorization__container_form}>
@@ -81,10 +72,10 @@ const Authorization = () => {
             </div>
             <button 
                 type='submit'
-                disabled={loading}
+                disabled={isLoading}
                 className={styles.authorization__btn_primary}
                 >
-                    {loading ? 'Вход...' : 'Войти'}
+                    {isLoading ? 'Вход...' : 'Войти'}
             </button>
             <div className={styles.authorization__password_btn}>
                 <button 
@@ -107,47 +98,26 @@ const Authorization = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
-        if (registerData.password.length < 8) {
-            setMessage ('Минимальное кол-во символов для пароля 8')
-            return
-        } 
-
-        if (registerData.password !== registerData.confirmPassword) {
-            setMessage ('Введены разные пароли')
-            return
-        }
-
-        setLoading(true);
         setMessage('');
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/register`,{
-                method: 'PUT',
-                headers: {'Content-type':'application/json'},
-                body: JSON.stringify({
-                    name: registerData.name,
-                    email: registerData.email,
-                    password: registerData.password,
-                }),
-            })
+        clearError();
 
-            const data = await response.json(); //Дожидаемся парсинга в json формат
+        const result = await register(
+            registerData.email,
+            registerData.password,
+            registerData.name,
+            registerData.confirmPassword,
+        );
 
-            if (data.ok) {
-                setMessage('Регистрация прошла успешно!')
-                setTimeout (()=>{
-                    setCurrentView('login');
-                    setMessage('');
-                    },2000) //Даем знать что регистрация прошла успешно и отправляем на логин
-            } else {
-                setMessage(data.message || 'Ошибка подключения...') //Может произойти только если что-то не правильно настроено, значит для отладки
-            }
-        } catch (error) {
-            setMessage('Ошибка подключения к серверу'); //Конкретно проблема бд или сервера (Ну или действительно интернета)
-        } finally {
-            setLoading(false); //Опять отключаем загрузку
+        if (result.success) {
+            setMessage(result.message);
+            setTimeout(() => {
+                setCurrentView('login');
+                setMessage('');
+            }, 2000);
+        } else {
+            setMessage(result.message);
         }
-    }
+    };
 
     const renderRegisterForm = () => (
         <form onSubmit={handleRegister} className={styles.authorization__container_content}>
@@ -196,23 +166,23 @@ const Authorization = () => {
             </div>
             <button 
                 type='submit'
-                disabled={loading}
+                disabled={isLoading}
                 className={styles.authorization__btn_primary}
                 >
-                    {loading ? 'Регистрация...' : 'Зарегистрироваться'}
+                    {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
             </button>
             <div className={styles.authorization__password_btn}>
                 <button 
                     type='button'
                     className={styles.authorization__register_btn}
-                    onClick={() => setCurrentView('login')}
+                    onClick={() => handleViewChange('login')}
                     >
                         Назад
                 </button>
                 <button 
                     type='button'
                     className={styles.authorization__recover_btn}
-                    onClick={() => setCurrentView('reset')}
+                    onClick={() => handleViewChange('reset')}
                     >
                         Забыли пароль?
                 </button>
@@ -222,43 +192,22 @@ const Authorization = () => {
 
     const handleReset = async (e) => {
         e.preventDefault();
-
-        if (resetData.password.length < 8) {
-            setMessage ('Минимальное кол-во символов для пароля 8')
-            return
-        } 
-
-        if (resetData.password !== resetData.confirmPassword) {
-            setMessage ('Введены разные пароли')
-            return
-        }
-
-        setLoading(true);
         setMessage('');
+        clearError();
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/reset/`, {
-                method: 'PATCH',
-                headers: {'Content-type':'application/json'},
-                body: JSON.stringify ({
-                    email: resetData.email,
-                    password: resetData.password,
-                })
-            })
-                const data = await response.json();
+        const result = await resetPassword(
+            resetData.email,
+            resetData.password,
+            resetData.confirmPassword
+        );
 
-                if (data.ok) {
-                    setMessage('Замена пароля прошла успешно!')
-                } else {
-                    setMessage(data.message || 'Ошибка подключения...')
-                }
-            
-        } catch {
-            setMessage('Ошибка подключения...') 
-        } finally {
-            setLoading(false);
+        if (result.success) {
+            setMessage(result.message);
+            setCurrentView('login')
+        } else {
+            setMessage(result.message);
         }
-    }
+    };
 
     const renderResetForm = () => (
         <form onSubmit={handleReset} className={styles.authorization__container_content}>
@@ -297,10 +246,10 @@ const Authorization = () => {
             </div>
             <button 
                 type='submit'
-                disabled={loading}
+                disabled={isLoading}
                 className={styles.authorization__btn_primary}
                 >
-                    {loading ? 'Сохранение...' : 'Сохранить'}
+                    {isLoading ? 'Сохранение...' : 'Сохранить'}
             </button>
             <div className={styles.authorization__password_btn}>
                 <button 

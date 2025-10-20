@@ -1,13 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Cataloge from './components/cataloge/Cataloge'
 import Search from './components/search/Search'
 import styles from './Header.module.scss'
 import { Link } from 'react-router-dom'
+import { useAuthStore } from '../../stores/useAuthStore'
+import { useNavigate } from 'react-router-dom';
+import { AiOutlineUser, AiOutlineSetting, AiOutlineLogout } from "react-icons/ai";
 
 function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  const { user, logout, token } = useAuthStore();
+  const navigate = useNavigate();
 
-  const checkToken = !!localStorage.getItem('authToken')
-  const userName = localStorage.getItem('userName')
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+      await logout();
+      setIsOpen(false);
+  };
+
+  const menuItems = [
+      {
+          label: 'Мой профиль',
+          onClick: () => {
+              navigate('/profile')
+              setIsOpen(false);
+          },
+          icon: <AiOutlineUser size={16} />
+      },
+      {
+          label: 'Настройки',
+          onClick: () => {
+              console.log('Переход в настройки');
+              setIsOpen(false);
+          },
+          icon: <AiOutlineSetting size={16} />
+      },
+      {
+          type: 'divider'
+      },
+      {
+          label: 'Выйти',
+          onClick: handleLogout,
+          icon: <AiOutlineLogout size={16} />,
+          danger: true
+      }
+  ];
 
   return (
     <header className={styles.header}>
@@ -62,14 +112,49 @@ function Header() {
             </svg>
             <p className={styles.header__descr_btn}>Корзина</p>
           </Link>
-            {checkToken ? 
+            {token ? 
             (<div className={styles.header__author_container}>
-              <Link to='profile' className={styles.header__author_name}>{userName}</Link>
-              <button className={styles.header__menu}>
-                  <svg className={styles.header__author_svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <Link to='profile' className={styles.header__author_name}>{user.userName || 'Гость'}</Link>
+              <button 
+                className={styles.header__menu} 
+                style={isOpen ? {} : {}}
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                  <svg className={`${styles.header__author_svg} ${isOpen ? styles.rotated : ''}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" clipRule="evenodd" d="M5.64645 8.64645C5.84171 8.45118 6.15829 8.45118 6.35355 8.64645L12 14.2929L17.6464 8.64645C17.8417 8.45118 18.1583 8.45118 18.3536 8.64645C18.5488 8.84171 18.5488 9.15829 18.3536 9.35355L12.3536 15.3536C12.1583 15.5488 11.8417 15.5488 11.6464 15.3536L5.64645 9.35355C5.45118 9.15829 5.45118 8.84171 5.64645 8.64645Z" fill="#414141"/>
                   </svg>
               </button>
+              {isOpen && (
+                <div className={styles.header__dropdown_menu}>
+                  <div className={styles.header__menu_header}>
+                    <div className={styles.header__user_info}>
+                        <div className={styles.header__user_name}>
+                          Имя: {user?.userName || 'Пользователь'}
+                        </div>
+                        <div className={styles.header__user_email}>
+                          Почта: {user?.email}
+                        </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.header__menu_items}>
+                    {menuItems.map((item, index) => (
+                      item.type === 'divider' ? (
+                        <div key={index} className={styles.header__menu_divider} />
+                      ) : (
+                        <button
+                          key={index}
+                          className={`${styles.header__menu_item} ${item.danger ? styles.header__danger : ''}`}
+                          onClick={item.onClick}
+                        >
+                          <span className={styles.header__menu_icon}>{item.icon}</span>
+                          <span className={styles.header__menu_item}>{item.label}</span>
+                        </button>
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>) : (<Link className={styles.header__author_link} to='login'>Войти</Link>)}
         </div>
       </nav>

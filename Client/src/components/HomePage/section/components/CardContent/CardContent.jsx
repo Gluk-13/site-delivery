@@ -166,10 +166,11 @@ function CardContent({
             </div>
             {!isAdded ? (
                 <button className={styles.card__cart_btn}
+                
                 onClick={() => handleQuantityChange(1)}
                 disabled={isThisProductLoading}
                 >
-                    { isThisProductLoading || isError ? 'Добавление...' : 'В корзину'}
+                    { isThisProductLoading ? 'Добавление...' : 'В корзину'}
                 </button>) : (
                 <div className={styles.card__added_container}>
                     <p className={styles.card__added_descr}>

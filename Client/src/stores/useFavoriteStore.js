@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useAuthStore } from './useAuthStore';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -15,7 +16,7 @@ export const useFavoriteStore = create(
                 try {
                     set({ isFavoriteLoading: true, isFavoriteError: null})
 
-                    const token = localStorage.getItem('authToken')
+                    const token = useAuthStore.getState().token;
                     const response = await fetch(`${API_BASE_URL}/favorites`, {
                         method: 'GET',
                         headers: {
@@ -49,7 +50,13 @@ export const useFavoriteStore = create(
             addToFavorites: async (productId) => {
                 try {
                     set({ isFavoriteError: null, isFavoriteLoading: true })
-                    const token = localStorage.getItem('authToken')
+                    const token = useAuthStore.getState().token;
+
+                    if (!token) {
+                        set({ isFavoriteLoading: false, isFavoriteError:'Вы не авторизованы'})
+                        return
+                    }
+
                     const response = await fetch(`${API_BASE_URL}/favorites/items`, {
                         method: 'POST',
                         headers: {
@@ -78,7 +85,7 @@ export const useFavoriteStore = create(
             removeFromFavorites: async (productId) => {
                 try {
                     set({ isFavoriteLoading: true, isFavoriteError: null })
-                    const token = localStorage.getItem('authToken')
+                    const token = useAuthStore.getState().token;
                     const response = await fetch(`${API_BASE_URL}/favorites/items/${productId}`, {
                         method: 'DELETE',
                         headers: {
@@ -112,6 +119,10 @@ export const useFavoriteStore = create(
             getFavoritesCount: () => {
                 const { favorites } = get();
                 return Array.isArray(favorites) ? favorites.length : 0;
+            },
+
+            clearFavorites: () => {
+                set({ favorites: [], isFavoriteLoading: false })
             }
         }),
         {
