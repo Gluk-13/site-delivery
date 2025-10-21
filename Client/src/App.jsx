@@ -14,7 +14,8 @@ import Sale from './components/HomePage/section/SaleProductSection/Sale'
 import NewProduct from './components/HomePage/section/NewProduct/NewProduct'
 import FavoritePage from './components/Favorite/FavoritePage'
 import Orders from './components/Orders/Orders'
-import CategoryPage from './components/Header/components/cataloge/components/CategoryPage'
+import CategoryPage from './components/Header/components/cataloge/components/CategoryPage/CategoryPage'
+import CatalogePage from './components/Header/components/cataloge/components/CatalogePage/CatalogePage'
 
 function AppLayout() {
   const location = useLocation();
@@ -52,7 +53,9 @@ function App() {
               <Route path='new-product' element={<NewProduct/>} />
               <Route path='favorite' element={<FavoritePage/>} />
               <Route path='orders' element={<Orders/>} />
+              <Route path='cataloge' element={<CatalogePage/>} />
               <Route path="/cataloge/:categoryName" element={<CategoryPage />}/>
+              
             </Route>
           </Routes>
         </BrowserRouter>

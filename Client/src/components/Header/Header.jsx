@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import Cataloge from './components/cataloge/Cataloge'
+import Cataloge from './components/cataloge/CatalogeBtn'
 import Search from './components/search/Search'
 import styles from './Header.module.scss'
 import { Link } from 'react-router-dom'

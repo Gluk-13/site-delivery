@@ -80,23 +80,23 @@ function NewProduct() {
         </div>
         <div className={styles['new-products__container_content']}>
           {displayedProducts.map(product => {
-          if (!product.id) {
-            console.warn('Товар без ID обнаружен:', product);
-            return null;
-          }
-          return (
-          <CardContent
-            key={product.id}
-            productId={product.id}
-            name = {product.name}
-            price = {product.price}
-            discountPrice = {product.discount_price}
-            imageUrl = {product.image_url}
-            rating = {product.rating}
-            discountPercent = {product.discount_percent}
-          />
-          )
-        })}
+            if (!product.id) {
+              console.warn('Товар без ID обнаружен:', product);
+              return null;
+            }
+            return (
+              <CardContent
+                key={product.id}
+                productId={product.id}
+                name = {product.name}
+                price = {product.price}
+                discountPrice = {product.discount_price}
+                imageUrl = {product.image_url}
+                rating = {product.rating}
+                discountPercent = {product.discount_percent}
+              />
+            )
+          })}
         </div>
         <PageList
         productsProps={products}

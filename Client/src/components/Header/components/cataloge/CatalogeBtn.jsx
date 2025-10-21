@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import styles from "./Cataloge.module.scss"
+import styles from "./CatalogeBtn.module.scss"
 import { Link } from 'react-router-dom'
 
 function Cataloge() {
