@@ -33,7 +33,13 @@ INSERT INTO public.users (id, email, password_hash, role_id, name) VALUES
 (1, 'manager@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 'Unknown'),
 (2, 'user@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 'Unknown'),
 (3, 'admin@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 'Unknown'),
-(4, 'art.nek.13@gmail.com', '$2b$10$eIjgxgpKzd.GoBll11oKe.l2HvMscI55hRH7/dYWxGg9ZOHZHaWYC', NULL, 'Артем')
+(4, 'art.nek.13@gmail.com', '$2b$10$eIjgxgpKzd.GoBll11oKe.l2HvMscI55hRH7/dYWxGg9ZOHZHaWYC', 1, 'Артем')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO orders (user_id, address, order_number, status, total_amount) VALUES
+(4, 'ул. Тестовая, 1', 'ORD-TEST-1', 'Новый', 1500.00),
+(4, 'ул. Тестовая, 2', 'ORD-TEST-2', 'Собран', 2000.00),
+(4, 'ул. Тестовая, 3', 'ORD-TEST-3', 'Доставляется', 3000.00)
 ON CONFLICT (id) DO NOTHING;
 
 --Первые товары

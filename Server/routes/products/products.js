@@ -2,6 +2,61 @@ import express from 'express';
 const router = express.Router();
 import pool from '../../config/db.js'
 
+// GET /api/products/search?q=свиная шея
+router.get('/search', async (req, res) => {
+    const { q } = req.query;
+    
+    try {
+        if (!q || q.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Поисковый запрос не может быть пустым'
+            })
+        }
+
+        // Разбиваем поисковую фразу на отдельные слова
+        const searchWords = q.trim().split(/\s+/).filter(word => word.length > 0);
+        
+        if (searchWords.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Неверный поисковый запрос'
+            })
+        }
+
+        // Создаем условия для каждого слова
+        const conditions = searchWords.map((word, index) => `name ILIKE $${index + 1}`);
+        const values = searchWords.map(word => `%${word}%`);
+        
+        const searchQuery = `
+        SELECT * FROM products 
+        WHERE ${conditions.join(' AND ')}
+        ORDER BY 
+            name,
+            CASE 
+                WHEN name ILIKE $1 THEN 1
+                ELSE 2
+            END
+        LIMIT 20
+        `
+
+        const dbQuery = await pool.query(searchQuery, values)
+
+        res.status(200).json({
+            success: true,
+            data: dbQuery.rows,
+            total: dbQuery.rows.length
+        })
+        
+    } catch (error) {
+        console.error('Ошибка в GET /api/products/search:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Ошибка сервера при поиске товаров'
+        })
+    }
+})
+
 router.post('/bulk', async (req, res) => {
     const { ids } = req.body;
     

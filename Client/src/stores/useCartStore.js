@@ -27,46 +27,40 @@ export const useCartStore = create(
         
         fetchCart: async () => {
             try {
-            set({ isCartLoading: true, isError: null });
-            
-            const userId = useAuthStore.getState().user?.id;
-            const token = useAuthStore.getState().token;
+                set({ isCartLoading: true, isError: null });
+                const token = useAuthStore.getState().token;
 
-            const response = await fetch(`${API_BASE_URL}/cart`, {
-                method: 'GET',
-                headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                },
-            });
+                const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/cart`, {
+                    method: 'GET',
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    },
+                });
 
-            if (!response.ok) throw new Error('Ошибка при загрузке корзины');
+                if (!response.ok) throw new Error('Ошибка при загрузке корзины');
 
-            const cartDataFromServer = await response.json();
+                const cartDataFromServer = await response.json();
 
-            const productIds = cartDataFromServer.map(item => item.productId);
-            const productsResponse = await fetch(`${API_BASE_URL}/products/bulk`, {
-                method: 'POST',
-                headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ids: productIds }),
-            });
+                const productIds = cartDataFromServer.map(item => item.productId);
+                const productsResponse = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/products/bulk`, {
+                    method: 'POST',
+                    body: JSON.stringify({ ids: productIds }),
+                });
 
-            let productsData = [];
-            if (productsResponse.ok) {
-                const result = await productsResponse.json();
-                if (result.success) productsData = result.data;
-            }
+                let productsData = [];
+                if (productsResponse.ok) {
+                    const result = await productsResponse.json();
+                    if (result.success) productsData = result.data;
+                }
 
-            set({ 
-                cartData: cartDataFromServer,
-                productsData,
-                isEmpty: cartDataFromServer.length === 0,
-                isCartLoading: false,
-                isError: null
-            });
+                set({ 
+                    cartData: cartDataFromServer,
+                    productsData,
+                    isEmpty: cartDataFromServer.length === 0,
+                    isCartLoading: false,
+                    isError: null
+                });
 
             } catch (error) {
 
@@ -89,12 +83,8 @@ export const useCartStore = create(
                 return
             }
             
-            const response = await fetch(`${API_BASE_URL}/cart/items`, {
+            const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/cart/items`, {
                 method: 'POST',
-                headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({ productId, quantity })
             });
 
@@ -114,11 +104,8 @@ export const useCartStore = create(
         removeItemInCart: async (productId) => {
             try {
             set({ isCartLoading: true });
-            
-            const token = useAuthStore.getState().token;
-            const response = await fetch(`${API_BASE_URL}/cart/items/${productId}`, {
+            const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/cart/items/${productId}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` },
             });
 
             if (!response.ok) throw new Error('Ошибка при удалении товара');

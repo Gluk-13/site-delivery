@@ -18,6 +18,40 @@ export const useAuthStore = create(
 
             setError: (error) => set({ error }),
 
+            fetchWithAuth: async (url, options = {}) => {
+                let token = get().token;
+                
+                let response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                });
+
+                if (response.status === 401) {
+                    try {
+                        const newToken = await get().refreshToken();
+                        if (newToken) {
+                            response = await fetch(url, {
+                                ...options,
+                                headers: {
+                                'Authorization': `Bearer ${newToken}`,
+                                'Content-Type': 'application/json',
+                                ...options.headers,
+                                },
+                            });
+                        }
+                    } catch (refreshError) {
+                        get().logout();
+                        throw new Error('Сессия истекла. Пожалуйста, войдите снова.');
+                    }
+                }
+
+                return response;
+            },
+
             login: async (email, password) => {
                 try {
                     set({ isLoading: true, error: null })
@@ -209,9 +243,11 @@ export const useAuthStore = create(
 
                     const data = await response.json();
                     const newToken = data.token;
+                    const newRole = data.role;
 
                     set({
-                        token: newToken
+                        token: newToken,
+                        role: newRole
                     })
                     
                     return newToken;

@@ -1,15 +1,16 @@
-import express from 'express'; //фреймворк
-import cors from 'cors'; //хз пока, не вникал
-import path from 'path'; // нужна для разрешения использовать папку со статичными файлами фронту
-import 'dotenv/config'; // очередной конфиг а вот че он делает...
+import express from 'express';
+import cors from 'cors'; 
+import path from 'path'; 
+import 'dotenv/config'; 
 
-import productsRoutes from './routes/products/products.js';//Роут для товаров в приложении(Информация)
+import productsRoutes from './routes/products/products.js';
 import authRoutes from './routes/auth/login.js'; 
 import cartRoutes from './routes/cart/cartRoutes.js'
 import favorRoutes from './routes/favour/favorRoutes.js'
 import orderRoutes from './routes/orders/orders.js'
 import adminOrdersRoutes from './routes/orders/admin-orders.js'
 import { authenticateToken } from './middleware/auth.js';
+import { checkoutRole } from './middleware/role.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -29,7 +30,7 @@ app.use('/api/users', authRoutes);
 app.use('/api/cart',authenticateToken, cartRoutes);
 app.use('/api/favorites',authenticateToken, favorRoutes);
 app.use('/api/orders',authenticateToken, orderRoutes);
-app.use('/api/orders',authenticateToken, adminOrdersRoutes);
+app.use('/api/orders',authenticateToken, checkoutRole, adminOrdersRoutes);
 
 
 app.get('/api/test', (req, res) => {

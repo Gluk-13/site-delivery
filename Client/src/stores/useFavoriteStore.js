@@ -17,13 +17,7 @@ export const useFavoriteStore = create(
                     set({ isFavoriteLoading: true, isFavoriteError: null})
 
                     const token = useAuthStore.getState().token;
-                    const response = await fetch(`${API_BASE_URL}/favorites`, {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
-                    });
+                    const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/favorites`);
 
                     if (response.ok) {
                         const data = await response.json();
@@ -57,12 +51,8 @@ export const useFavoriteStore = create(
                         return
                     }
 
-                    const response = await fetch(`${API_BASE_URL}/favorites/items`, {
+                    const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/favorites/items`, {
                         method: 'POST',
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
                         body: JSON.stringify({ productId })
                     });
                     if(response.ok) {
@@ -85,13 +75,8 @@ export const useFavoriteStore = create(
             removeFromFavorites: async (productId) => {
                 try {
                     set({ isFavoriteLoading: true, isFavoriteError: null })
-                    const token = useAuthStore.getState().token;
-                    const response = await fetch(`${API_BASE_URL}/favorites/items/${productId}`, {
+                    const response = await useAuthStore.getState().fetchWithAuth(`${API_BASE_URL}/favorites/items/${productId}`, {
                         method: 'DELETE',
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
                     });
                     if (response.ok) {
                         const updatedFavorites = await response.json();

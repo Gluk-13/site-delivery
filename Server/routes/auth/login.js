@@ -39,7 +39,10 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
         const JWT_SECRET = process.env.JWT_SECRET || 'секретный_код';
 
         const token = jwt.sign(
-            {userId: dbUserId},
+            {
+                userId: dbUserId,
+                role: dbUserRole
+            },
             JWT_SECRET,
             {expiresIn: '10h'}
         )
@@ -159,7 +162,7 @@ router.post('/refresh',async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
 
         const newToken = jwt.sign(
-            { userId: decoded.userId },
+            { userId: decoded.userId, role: decoded.role },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );

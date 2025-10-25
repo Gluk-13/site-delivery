@@ -16,6 +16,9 @@ import FavoritePage from './components/Favorite/FavoritePage'
 import Orders from './components/Orders/Orders'
 import CategoryPage from './components/Header/components/cataloge/components/CategoryPage/CategoryPage'
 import CatalogePage from './components/Header/components/cataloge/components/CatalogePage/CatalogePage'
+import AdminPanelOrders from './components/AdminPanel/AdminPanelOrders.jsx'
+import { useAuthStore } from './stores/useAuthStore.js'
+import SearchPage from './components/Header/components/search/SearchPage/SearchPage.jsx'
 
 function AppLayout() {
   const location = useLocation();
@@ -34,6 +37,10 @@ function AppLayout() {
 }
 
 function App() {
+
+if (typeof window !== 'undefined') {
+  window.useAuthStore = useAuthStore;
+}
 
   return (
         <BrowserRouter>
@@ -55,7 +62,8 @@ function App() {
               <Route path='orders' element={<Orders/>} />
               <Route path='cataloge' element={<CatalogePage/>} />
               <Route path="/cataloge/:categoryName" element={<CategoryPage />}/>
-              
+              <Route path='/admin/orders' element={<AdminPanelOrders/>}/>
+              <Route path='/search' element={<SearchPage/>} />
             </Route>
           </Routes>
         </BrowserRouter>

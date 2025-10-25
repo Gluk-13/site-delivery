@@ -42,9 +42,9 @@ function Orders() {
               </div>) : (
             ordersData.map(order => (
               <OrderItem
-              key={order.id}
-              order={order}
-              ordersData={ordersData}
+                key={order.id}
+                order={order}
+                ordersData={ordersData}
               />
             ))
           )}
