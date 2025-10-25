@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
             });
         }
 
-        const { id: dbUserId, name: dbUserName, email: dbUserEmail} = dbResult.rows[0];
+        const { id: dbUserId, name: dbUserName, email: dbUserEmail, role_id: dbUserRole} = dbResult.rows[0];
         const JWT_SECRET = process.env.JWT_SECRET || 'секретный_код';
 
         const token = jwt.sign(
@@ -50,7 +50,8 @@ router.post('/login', async (req, res) => { //Пишем эндпоинт
             user: {
                 id: dbUserId,
                 email: dbUserEmail,
-                userName: dbUserName
+                userName: dbUserName,
+                role: dbUserRole
             }
         })
         
@@ -88,7 +89,7 @@ router.put('/register', async (req, res) => {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        const insertQuery = 'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id';
+        const insertQuery = 'INSERT INTO users (name, email, password_hash, role_id) VALUES ($1, $2, $3, 1) RETURNING id';
         const insertResult = await pool.query(insertQuery, [name, email, hashedPassword]);
 
         res.status(200).json({
@@ -172,7 +173,6 @@ router.post('/refresh',async (req, res) => {
 
 router.post('/logout', (req, res) => {
   try {
-    
     res.json({ 
       success: true, 
       message: 'Успешный выход' 

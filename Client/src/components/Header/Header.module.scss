@@ -8,7 +8,6 @@
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
     position: relative;
 
-    
     &__nav {
         width: 100%;
         display: flex;
@@ -73,6 +72,8 @@
         align-items: start;
         font-size: calc(var(--font-size)*4);
         font-weight: 500;
+        text-decoration: none;
+        color: inherit;
         &:hover {
             opacity: 0.9;
             scale: 1.1;

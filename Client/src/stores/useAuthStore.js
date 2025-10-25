@@ -12,6 +12,7 @@ export const useAuthStore = create(
             token: null,
             isLoading: false,
             error: null,
+            role: null,
 
             setLoading: (isLoading) => set({ isLoading }),
 
@@ -36,18 +37,20 @@ export const useAuthStore = create(
                         throw new Error(data.message || 'Ошибка входа')
                     }
 
-                    const { token, success, user } = data
+                    const { token, success, user, role } = data
 
                     set ({
                         user: {
                             id: user.id,
                             email: user.email,
-                            userName: user.userName
+                            userName: user.userName,
+                            role: user.role
                         },
                         token: token,
                         success: success,
                         isLoading: false,
-                        error: null
+                        error: null,
+                        role: user.role
                     })
 
                     useCartStore.getState().fetchCart();
@@ -241,7 +244,7 @@ export const useAuthStore = create(
                 } catch(error) {
                     console.error('Logout error:', error);
                 } finally {
-                    set({ user: null, token: null, isLoading: false, error: null });
+                    set({ user: null, token: null, isLoading: false, error: null, role: null, });
                     useCartStore.getState().clearCart();
                     useFavoriteStore.getState().clearFavorites();
                     useOrdersStore.getState().clearOrders();
@@ -258,7 +261,8 @@ export const useAuthStore = create(
         name: 'auth-storage',
         partialize: (state) => ({
             user: state.user,
-            token: state.token
+            token: state.token,
+            role: state.role
         })
     }) 
 )

@@ -35,8 +35,13 @@ function CatalogePage() {
                     <Link to={`/cataloge/${category.id}`}
                         key={category.id}
                         className={`${style.cataloge__item} ${style[`cataloge__item_${category.size}`]}`}
+                        style={{
+                            backgroundImage: `url(${category.image})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat'
+                        }}
                         >
-                        <img src={category.image} alt="" className={style.cataloge__img} />
                         <h3 className={style.cataloge__name}>
                             {category.name}
                         </h3>
