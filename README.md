@@ -61,6 +61,17 @@ chore:   Вспомогательные изменения
 Запуск через
     - npm start test
 
+                                        ВАЖНО НИЖЕ ДАННЫЕ ДЛЯ ТЕСТОВ: ДЛЯ НАЧАЛА СТОИТ ИСПОЛЬЗОВАТЬ АККАУНТ ПОЛЬЗОВАТЕЛЯ
+Админ:
+email: admin@test.com
+пароль: Admin1234!
+role_id: 2
+
+Пользователь:
+email: user@test.com
+пароль: User1234!
+role_id: 1
+
 ## Запуск
 
 1. Установите [Docker](https://docker.com) и [Git](https://git-scm.com)
