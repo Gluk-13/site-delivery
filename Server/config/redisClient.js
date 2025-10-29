@@ -7,8 +7,8 @@ let redisClientInstance = null;
 
 const createRedisClient = () => {
   const redisConfig = {
-    host: process.env.REDIS_HOST || 'redis',
-    port: parseInt(process.env.REDIS_PORT) || 6379,
+    host: process.env.REDIS_HOST || process.env.REDISHOST || 'redis',
+    port: parseInt(process.env.REDIS_PORT || process.env.REDISPORT) || 6379,
     connectTimeout: 5000,
     retryDelayOnFailover: 100,
     maxRetriesPerRequest: 2,
@@ -16,8 +16,9 @@ const createRedisClient = () => {
     showFriendlyErrorStack: true,
   };
 
-  if (process.env.REDIS_PASSWORD) {
-    redisConfig.password = process.env.REDIS_PASSWORD;
+  const redisPassword = process.env.REDIS_PASSWORD || process.env.REDISPASS || process.env.REDISPASSWORD;
+  if (redisPassword) {
+    redisConfig.password = redisPassword;
   }
 
   return new Redis(redisConfig);
