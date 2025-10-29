@@ -18,12 +18,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-
-//Middleware
-// CORS: отражаем Origin, чтобы проходил preflight с Vercel/других доменов
 const corsOptions = {
   origin: (origin, callback) => {
-    // Разрешаем все внешние origin; при необходимости можно сузить список
     callback(null, true);
   },
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],

@@ -3,12 +3,10 @@ import 'dotenv/config';
 
 const { Pool } = pg;
 
-// Определяем хост: приоритет у переменной окружения DB_HOST (Railway Addon)
 const isDocker = process.env.DOCKER_ENV === 'true';
 const dbHost = process.env.DB_HOST || process.env.PGHOST || (isDocker ? 'postgres' : 'localhost');
 
 const pool = new Pool({
-  // Для Docker используем имена сервисов, для разработки - localhost
   user: process.env.DB_USER || process.env.PGUSER || 'postgres',
   host: dbHost,
   database: process.env.DB_NAME || process.env.PGDATABASE || 'food_delivery', 
@@ -34,7 +32,6 @@ const testConnection = async () => {
     client.release();
   } catch (error) {
     console.error('Ошибка подключения к БД:', error.message);
-    // Не выходим из процесса при ошибке, чтобы приложение могло переподключиться
   }
 };
 
