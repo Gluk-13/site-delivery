@@ -2,7 +2,6 @@ import express from 'express';
 const router = express.Router();
 import pool from '../../config/db.js'
 
-// GET /api/products/search?q=свиная шея
 router.get('/search', async (req, res) => {
     const { q } = req.query;
     
@@ -14,7 +13,6 @@ router.get('/search', async (req, res) => {
             })
         }
 
-        // Разбиваем поисковую фразу на отдельные слова
         const searchWords = q.trim().split(/\s+/).filter(word => word.length > 0);
         
         if (searchWords.length === 0) {
@@ -24,7 +22,6 @@ router.get('/search', async (req, res) => {
             })
         }
 
-        // Создаем условия для каждого слова
         const conditions = searchWords.map((word, index) => `name ILIKE $${index + 1}`);
         const values = searchWords.map(word => `%${word}%`);
         

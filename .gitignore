@@ -13,6 +13,7 @@ build/
 # IDE files
 .vscode/
 .idea/
+.cursorrules
 
 # OS files
 .DS_Store

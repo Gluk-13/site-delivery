@@ -24,4 +24,13 @@
         color: var(--font-black);
         margin-bottom: calc(var(--size-base)*10);
     }
+
+    &__descr {
+        font-family: 'Rubik';
+        font-size: calc(var(--font-size)*4);
+        font-weight: 700;
+        color: var(--font-black);
+        margin-bottom: calc(var(--size-base)*10);
+        margin-top: calc(var(--size-base)*8);
+    }
 }

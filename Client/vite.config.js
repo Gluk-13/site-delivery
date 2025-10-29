@@ -11,5 +11,28 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  
+  build: {
+    minify: 'esbuild',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom'],
+          'state-vendor': ['zustand']
+        },
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
+      }
+    }
+  },
+  base: './',
+  optimizeDeps: {
+    include: ['react', 'react-dom']
   }
 })

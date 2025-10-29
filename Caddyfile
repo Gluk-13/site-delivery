@@ -1,0 +1,11 @@
+# Replace example.com with your domain
+example.com {
+    encode zstd gzip
+
+    @api {
+        path /api* /swagger* /docs*
+    }
+    reverse_proxy @api 127.0.0.1:4200
+
+    reverse_proxy 127.0.0.1:3000
+}

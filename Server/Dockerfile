@@ -11,9 +11,8 @@ COPY . .
 # Добавим логирование
 RUN echo "Содержимое папки:" && ls -la
 
-EXPOSE 4201
+EXPOSE 4200
 
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
-# Запуск с логированием
 CMD ["sh", "-c", "echo '🚀 Запуск сервера...' && node server.js"]

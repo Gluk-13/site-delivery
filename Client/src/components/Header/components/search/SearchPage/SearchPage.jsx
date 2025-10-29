@@ -13,6 +13,8 @@ function SearchPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || ''
+
   const searchProducts = async (searchQuery) => {
     if (!searchQuery.trim()) {
       setSearchResults([])
@@ -23,7 +25,7 @@ function SearchPage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/products/search?q=${encodeURIComponent(searchQuery)}`, {
+      const response = await fetch(`${API_BASE_URL}/api/products/search?q=${encodeURIComponent(searchQuery)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -104,8 +106,8 @@ function SearchPage() {
             )}
           </div>
         ) : (
-          <div className={styles['search-page__empty']}>
-            Введите поисковый запрос
+          <div className={styles['search-page__descr']}>
+            Введите поисковый запрос...
           </div>
         )}
       </div>

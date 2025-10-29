@@ -6,13 +6,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    env_file:
+      - ./.env
     environment:
-      POSTGRES_DB: food_delivery 
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1833
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./Server/migrations:/docker-entrypoint-initdb.d
@@ -22,8 +21,8 @@ services:
   redis:
     image: redis:7-alpine
     command: redis-server --appendonly yes
-    ports:
-      - "6379:6379"
+    env_file:
+      - ./.env
     volumes:
       - redis_data:/data
     restart: always
@@ -38,20 +37,19 @@ services:
     networks:
       - default
 
+    env_file:
+      - ./.env
     environment:
       PORT: 4200
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: food_delivery
-      DB_USER: postgres
-      DB_PASSWORD: 1833
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
       DOCKER_ENV: true
       NODE_ENV: production
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     mem_limit: 512m
     mem_reservation: 256m
 
@@ -66,7 +64,8 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
 volumes:
   postgres_data:
