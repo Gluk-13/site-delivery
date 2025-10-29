@@ -7,9 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "start": "vite",
     "preview": "vite preview",
-    "docker:build": "npm run build && docker-compose up --build"
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
